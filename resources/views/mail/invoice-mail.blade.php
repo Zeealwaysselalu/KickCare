@@ -13,22 +13,22 @@
         <h2 style="text-align: center">INVOICE PEMBELIAN</h2>
         <p style="text-align: center">Kode Transaksi: KC2026000001</p>
     </div>
-
+    <br>
     <table border="1" width="25%" style="margin: 0 auto; border: 1px solid black;">
         <thead>
             <tr>
-                <th>Produk</th>
+                <th>Jenis Sepatu</th>
+                <th>Jenis Pelayanan</th>
                 <th>Harga</th>
-                <th>Qty</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Nama Produk</td>
-                <td>Kode Produk</td>
-                <td>Quantity</td>
-                <td>Subtotal</td>
+                <td>Nike Air Force 1</td                 >
+                <td>Deep Clean</td>
+                <td>50,000</td>
+                <td>50,000</td>
             </tr>
         </tbody>
     </table>
