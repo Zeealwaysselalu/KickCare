@@ -15,7 +15,7 @@ class TransactionController extends Controller
             $dataTransaction = Transaction::with('outlet', 'user')->get();
             return view('profile.role.user.dashboard', ['allTransactions' => $dataTransaction]);
         }
-    
+
         /**
         * Show the form for creating a new resource.
         */
@@ -23,7 +23,7 @@ class TransactionController extends Controller
         {
             //
         }
-    
+
         /**
         * Store a newly created resource in storage.
         */
@@ -31,15 +31,15 @@ class TransactionController extends Controller
         {
             //
         }
-    
+
         /**
         * Display the specified resource.
         */
         public function show(string $id)
         {
-            //
+            
         }
-    
+
         /**
         * Show the form for editing the specified resource.
         */
@@ -47,7 +47,7 @@ class TransactionController extends Controller
         {
             //
         }
-    
+
         /**
         * Update the specified resource in storage.
         */
@@ -55,7 +55,7 @@ class TransactionController extends Controller
         {
             //
         }
-    
+
         /**
         * Remove the specified resource from storage.
         */

@@ -7,12 +7,6 @@
                 </h1>
                 <p class="font-roboto text-[#6B7280] text-sm mt-1">Pantau status cuci sepatu Anda di sini.</p>
             </div>
-            <div class="hidden sm:flex items-center">
-                <div class="w-10 h-10 rounded-full bg-gray-200 border-2 border-white card-shadow overflow-hidden">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=3B82F6&color=fff"
-                        alt="Avatar">
-                </div>
-            </div>
         </header>
 
         <div class="grid grid-cols-12 gap-6">
@@ -30,9 +24,10 @@
                                 Member Bronze</h2>
                             <p class="font-roboto text-white/90 text-sm mt-1 max-w-xl">Diskon 5% untuk setiap
                                 Unyellowing Treatment.</p>
-                            <button
-                                class="mt-5 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner">Lihat
-                                Benefit</button>
+                            <a href="{{ route('benefits') }}"
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
+                                Lihat Benefit
+                            </a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>
@@ -48,9 +43,10 @@
                                 Member Silver</h2>
                             <p class="font-roboto text-white/90 text-sm mt-1 max-w-xl">Gratis Antar-Jemput & diskon 10%
                                 Repaint Treatment.</p>
-                            <button
-                                class="mt-5 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner">Lihat
-                                Benefit</button>
+                            <a href="{{ route('benefits') }}"
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
+                                Lihat Benefit
+                            </a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>
@@ -66,9 +62,10 @@
                                 Member Gold</h2>
                             <p class="font-roboto text-white/95 text-sm mt-1 max-w-xl">Diskon 20% Deep Clean Treatment
                                 sepanjang tahun.</p>
-                            <button
-                                class="mt-5 bg-white text-[#3B82F6] hover:bg-gray-100 font-roboto font-bold px-6 py-2 rounded-full text-xs transition shadow-md">Claim
-                                Benefit</button>
+                            <a href="{{ route('benefits') }}"
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
+                                Lihat Benefit
+                            </a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>

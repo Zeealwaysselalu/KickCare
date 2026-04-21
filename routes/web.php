@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome1');
 });
 
 Route::get('/wel', function () {
@@ -24,6 +24,23 @@ Route::get('/status', function () {
 Route::get('/dashboard1', function () {
     return view('dashboard');
 });
+
+Route::get('/benefits', function () {
+    return view('profile.role.user.benefits');
+})->middleware(['auth', 'verified'])->name('benefits');
+
+Route::get('/about', function () {
+    return view('profile.role.user.about');
+})->middleware(['auth', 'verified'])->name('about');
+
+Route::get('/service', function () {
+    return view('profile.role.user.customer-service');
+})->middleware(['auth', 'verified'])->name('service');
+
+Route::get('/pesanan', function () {
+    return view('profile.role.user.order')
+        ->with('allTransactions', Transaction::where('user_id', Auth::id())->get());
+})->middleware(['auth', 'verified'])->name('pesanan');
 
 Route::get('/dashboard', function () {
     $role = Auth::user()->role;
@@ -45,4 +62,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
