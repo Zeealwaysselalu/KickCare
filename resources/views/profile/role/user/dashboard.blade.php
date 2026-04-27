@@ -93,8 +93,10 @@
                     <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Pembersihan menyeluruh luar & dalam.</p>
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-[#3B82F6] font-bold text-sm">Rp 65k</span>
-                        <button
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg group-hover:bg-[#3B82F6] group-hover:text-white transition">Pilih</button>
+                        <a href="{{ route('transactions.create', ['service' => 'wash']) }}"
+                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                            Pilih
+                        </a>
                     </div>
                 </div>
 
@@ -112,8 +114,10 @@
                     <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Menghilangkan noda kuning di midsole.</p>
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-[#3B82F6] font-bold text-sm">Rp 100k</span>
-                        <button
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg group-hover:bg-[#3B82F6] group-hover:text-white transition">Pilih</button>
+                        <a href="{{ route('transactions.create', ['service' => 'unyellowing']) }}"
+                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                            Pilih
+                        </a>
                     </div>
                 </div>
 
@@ -131,24 +135,32 @@
                     <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Kembalikan warna sepatu seperti baru.</p>
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-[#3B82F6] font-bold text-sm">Rp 150k</span>
-                        <button
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg group-hover:bg-[#3B82F6] group-hover:text-white transition">Pilih</button>
+                        <a href="{{ route('transactions.create', ['service' => 'repaint']) }}"
+                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                            Pilih
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-span-12 mt-4">
-            <h2 class="font-montserrat font-semibold text-[20px] mb-4 text-gray-800">Aktivitas Terakhir</h2>
+            <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
+                <h2 class="font-montserrat font-semibold text-[20px] mb-4 text-gray-800">Aktivitas Terakhir</h2>
+                <form action="{{ route('pesanan') }}" method="GET">
+                    <button type="submit" class="text-blue-600 text-xs font-medium hover:underline">Lihat
+                        Semua</button>
+                </form>
+            </div>
             <div class="bg-white rounded-[14px] card-shadow overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        @forelse ($allTransactions as $transaction)
+                        @forelse ($latestTransactions as $transaction)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="p-4 text-[14px] font-medium text-[#1F2937]">
                                     {{ $transaction->shoes_name }}</td>
                                 <td class="p-4 text-[13px] text-[#6B7280] whitespace-nowrap">
-                                    {{ $transaction->transaction_date->format('d M Y') }}</td>
+                                    {{ $transaction->created_at->format('d M Y') }}</td>
                                 <td class="p-4 whitespace-nowrap">
                                     @if ($transaction->status === 'pending')
                                         <span

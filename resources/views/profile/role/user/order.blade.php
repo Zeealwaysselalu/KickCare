@@ -32,8 +32,7 @@
                             <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold">Status</th>
                             <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold">Total Harga
                             </th>
-                            <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center">
-                                Aksi</th>
+                            <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -55,7 +54,7 @@
                                     </div>
                                 </td>
                                 <td class="p-4 text-[13px] text-gray-500 whitespace-nowrap">
-                                    {{ $transaction->transaction_date->format('d M Y') }}
+                                    {{ $transaction->created_at->format('d M Y') }}
                                 </td>
                                 <td class="p-4 whitespace-nowrap">
                                     @if ($transaction->status === 'pending')
@@ -86,8 +85,8 @@
                                     Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
                                 </td>
                                 <td class="p-4 text-center">
-                                    <a href="#"
-                                        class="p-2 hover:bg-white rounded-lg text-gray-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-gray-100 transition inline-block">
+                                    <button data-id="{{ $transaction->id }}"
+                                        class="btn-detail p-2 rounded-lg text-gray-400 hover:text-blue-600 border border-transparent transition inline-block">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -95,7 +94,7 @@
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                             </path>
                                         </svg>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
@@ -117,15 +116,11 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse 
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-
-            <div class="px-6 py-4 bg-gray-50/30 border-t border-gray-50">
-                <p class="text-[11px] text-gray-400 font-medium uppercase tracking-widest">KickCare Dashboard System
-                    v1.0</p>
-            </div>
         </div>
     </div>
+    <x-modal-detail />
 </x-app-layout>

@@ -86,12 +86,57 @@ class DatabaseSeeder extends Seeder
             'shoes_name' => 'Nike Air Max',
             'outlet_id' => 1,
             'user_id' => 3,
-            'types' => 'wash',
+            'service' => 'wash',
             'status' => 'completed',
             'total_price' => 250000.00,
-            'transaction_date' => now(),
         ]);
 
+        Transaction::create([
+            'transaction_code' => 'KC0001',
+            'customer_name' => 'John Doe',
+            'shoes_name' => 'Adidas Ultraboost',
+            'shoes_color' => 'Black/White',
+            'outlet_id' => 1,
+            'user_id' => 3,
+            'service' => 'wash',
+            'status' => 'completed',
+            'total_price' => 300000.00,
+        ]);
 
+        Transaction::create([
+            'transaction_code' => 'KC0002',
+            'customer_name' => 'John Doe',
+            'shoes_name' => 'Puma RS-X',
+            'shoes_color' => 'Black/White',
+            'outlet_id' => 1,
+            'user_id' => 3,
+            'service' => 'wash',
+            'status' => 'completed',
+            'total_price' => 200000.00,
+        ]);
+
+        Transaction::create([
+            'transaction_code' => 'KC0003',
+            'customer_name' => 'John Doe',
+            'shoes_name' => 'Reebok Classic',
+            'shoes_color' => 'Black/White',
+            'outlet_id' => 1,
+            'user_id' => 3,
+            'service' => 'wash',
+            'status' => 'completed',
+            'total_price' => 150000.00,
+        ]);
+
+        Transaction::create([
+            'transaction_code' => 'KC0004',
+            'customer_name' => 'John Doe',
+            'shoes_name' => 'New Balance 574',
+            'shoes_color' => 'Black/White',
+            'outlet_id' => 1,
+            'user_id' => 3,
+            'service' => 'wash',
+            'status' => 'completed',
+            'total_price' => 180000.00,
+        ]);
     }
 }
