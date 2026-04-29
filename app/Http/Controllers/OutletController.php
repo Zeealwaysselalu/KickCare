@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,8 +10,7 @@ class OutletController extends Controller
 {
 
     public function index(){
-        $outlet = Auth::user()->outlet;
-        dd($outlet);
+        $allTransaction = Transaction::all()->findOrFail(Auth::user()->id);
         $allTransaction = $outlet->transactions;
         return view("profile.role.cashier.dashboard", compact($outlet, "outlet"));
     }

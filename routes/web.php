@@ -1,11 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TransactionController;
-use App\Models\Outlet;
-use App\Models\Transaction;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\{Auth, Route};
+use App\Http\Controllers\{ProfileController, TransactionController};
+use App\Models\{Outlet, Transaction};
 
 Route::get('/', function () {
     return view('welcome1');
@@ -39,7 +36,7 @@ Route::get('/service', function () {
     return view('profile.role.user.customer-service');
 })->middleware(['auth', 'verified'])->name('service');
 
-Route::get('/pesanan', function () {
+Route::get('/transaksi', function () {
     return view('profile.role.user.order')
         ->with('allTransactions', Transaction::where('user_id', Auth::id())->latest()->get());
 })->middleware(['auth', 'verified'])->name('pesanan');
@@ -50,7 +47,7 @@ Route::get('/dashboard', function () {
         return view('profile.role.admin.dashboard');
     }
     if ($role == 'cashier') {
-        return view('profile.role.cashier.dashboard');
+        return view('');
     }
     if ($role == 'user') {
         return view('profile.role.user.dashboard')
@@ -60,9 +57,9 @@ Route::get('/dashboard', function () {
 
 Route::get('/transaksi/{id}', [App\Http\Controllers\TransactionController::class, 'show'])->middleware(['auth', 'verified'])->name('transaksi.show');
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
     Route::get('/transaction', [TransactionController::class, 'create'])
-    ->name('transactions.create');
+        ->name('transactions.create');
     Route::post('/transaction/store', [TransactionController::class, 'store'])->name('transactions.store');
 });
 

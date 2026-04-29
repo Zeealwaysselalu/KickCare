@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Outlet;
-use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\{Outlet, Transaction, User};
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,8 +29,16 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'username' => 'Cashier',
-            'email' => 'kasir@kickcare.com',
+            'username' => 'CashierVeteran',
+            'email' => 'kasirveteran@kickcare.com',
+            'password' => Hash::make('password'),
+            'role' => 'cashier',
+            'balance' => 0,
+        ]);
+
+        User::create([
+            'username' => 'CashierSerpong',
+            'email' => 'kasirserpong@kickcare.com',
             'password' => Hash::make('password'),
             'role' => 'cashier',
             'balance' => 0,
@@ -74,18 +80,20 @@ class DatabaseSeeder extends Seeder
         Outlet::create([
             'name' => 'Outlet Veteran',
             'address' => 'Jl. Veteran No. 123, Tangerang',
+            'user_id' => 3,
         ]);
 
         Outlet::create([
             'name' => 'Outlet Serpong',
             'address' => 'Jl. Serpong No. 456, Tangerang',
+            'user_id'=> 4,
         ]);
 
         Transaction::create([
             'transaction_code' => 'KC0000',
             'shoes_name' => 'Nike Air Max',
             'outlet_id' => 1,
-            'user_id' => 3,
+            'user_id' => 4,
             'service' => 'wash',
             'status' => 'completed',
             'total_price' => 250000.00,
@@ -97,7 +105,7 @@ class DatabaseSeeder extends Seeder
             'shoes_name' => 'Adidas Ultraboost',
             'shoes_color' => 'Black/White',
             'outlet_id' => 1,
-            'user_id' => 3,
+            'user_id' => 4,
             'service' => 'wash',
             'status' => 'completed',
             'total_price' => 300000.00,
@@ -109,7 +117,7 @@ class DatabaseSeeder extends Seeder
             'shoes_name' => 'Puma RS-X',
             'shoes_color' => 'Black/White',
             'outlet_id' => 1,
-            'user_id' => 3,
+            'user_id' => 4,
             'service' => 'wash',
             'status' => 'completed',
             'total_price' => 200000.00,
@@ -121,7 +129,7 @@ class DatabaseSeeder extends Seeder
             'shoes_name' => 'Reebok Classic',
             'shoes_color' => 'Black/White',
             'outlet_id' => 1,
-            'user_id' => 3,
+            'user_id' => 4,
             'service' => 'wash',
             'status' => 'completed',
             'total_price' => 150000.00,
@@ -133,7 +141,7 @@ class DatabaseSeeder extends Seeder
             'shoes_name' => 'New Balance 574',
             'shoes_color' => 'Black/White',
             'outlet_id' => 1,
-            'user_id' => 3,
+            'user_id' => 4,
             'service' => 'wash',
             'status' => 'completed',
             'total_price' => 180000.00,

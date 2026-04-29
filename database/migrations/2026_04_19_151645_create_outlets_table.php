@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->id()->primary()->autoIncrement();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name');
             $table->text('address');
             $table->timestamps();
