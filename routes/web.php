@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\{Auth, Route};
-use App\Http\Controllers\{ProfileController, TransactionController};
+use App\Http\Controllers\{OutletController, ProfileController, TransactionController};
 use App\Models\{Outlet, Transaction};
 
 Route::get('/', function () {
@@ -47,8 +47,8 @@ Route::get('/dashboard', function () {
         return view('profile.role.admin.dashboard');
     }
     if ($role == 'cashier') {
-        return view('');
-    }
+        return app(OutletController::class)->index();
+        }
     if ($role == 'user') {
         return view('profile.role.user.dashboard')
             ->with('latestTransactions', Transaction::where('user_id', Auth::id())->latest()->take(5)->get());

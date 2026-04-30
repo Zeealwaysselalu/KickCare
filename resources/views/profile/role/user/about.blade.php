@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="p-6 sm:p-10 bg-gray-50 min-h-screen font-roboto">
+    <div class="p-6 sm:p-10 font-roboto">
         <div class="mb-10 animate-up">
             <h1 class="font-montserrat font-extrabold text-3xl text-gray-800 uppercase italic leading-tight">
                 Tentang <span class="text-blue-600">KickCare</span>

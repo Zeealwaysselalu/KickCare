@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="p-6 sm:p-10 bg-gray-50 min-h-screen font-roboto">
+    <div class="p-6 sm:p-10 font-roboto">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 animate-up">
             <div>
                 <h1 class="font-montserrat font-extrabold text-3xl text-gray-800 uppercase italic tracking-tight">

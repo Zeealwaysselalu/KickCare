@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="p-6 sm:p-10 bg-gray-50 min-h-screen">
+    <div class="p-6 sm:p-10 min-h-screen">
         <div class="mb-8 animate-up">
             <h1 class="font-montserrat font-extrabold text-3xl text-gray-800 uppercase italic tracking-tight">
                 Pesan <span class="text-blue-600">Layanan</span>
