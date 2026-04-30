@@ -8,25 +8,66 @@
 
     <nav class="flex-1 px-4 flex flex-col justify-start gap-2">
 
-        <a href="{{ route('dashboard') }}"
-           class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-            <span>Dashboard</span>
-        </a>
+        @if(Auth::user()->role == 'administrator')
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Dashboard Admin</span>
+            </a>
 
-        <a href="{{ route('pesanan') }}"
-           class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('pesanan') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-            <span>Pesanan Saya</span>
-        </a>
+            <a href="#"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.outlets*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Kelola Outlet</span>
+            </a>
 
-        <a href="{{ route('service')}}"
-           class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('service*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-            <span>Customer Service</span>
-        </a>
+            <a href="#"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.users*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Data Pengguna</span>
+            </a>
 
-        <a href="{{ route('about') }}"
-           class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('about') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-            <span>About KickCare</span>
-        </a>
+            <a href="#"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.reports*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Laporan Pendapatan</span>
+            </a>
+
+
+        @elseif(Auth::user()->role == 'cashier')
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Dashboard Outlet</span>
+            </a>
+
+            <a href="{{ route('transactions.create') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('transactions.create') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Buat Transaksi</span>
+            </a>
+
+            <a href="#"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('cashier.history*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Riwayat Transaksi</span>
+            </a>
+
+
+        @elseif(Auth::user()->role == 'user')
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ route('pesanan') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('pesanan') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Pesanan Saya</span>
+            </a>
+
+            <a href="{{ route('service')}}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('service*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Customer Service</span>
+            </a>
+
+            <a href="{{ route('about') }}"
+               class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('about') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>About KickCare</span>
+            </a>
+        @endif
 
     </nav>
 
@@ -41,6 +82,7 @@
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-bold text-gray-800 truncate">{{ Auth::user()->name ?: 'User' }}</p>
                 <p class="text-[11px] text-gray-500 truncate">{{ Auth::user()->email }}</p>
+                <p class="text-[10px] text-blue-500 font-semibold uppercase mt-0.5">{{ Auth::user()->role }}</p>
             </div>
         </div>
 
