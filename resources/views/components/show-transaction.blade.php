@@ -1,10 +1,6 @@
 <div class="bg-white rounded-[24px] p-6 self-start relative overflow-hidden max-w-sm mx-auto">
     <div class="relative z-10">
         <div class="flex justify-between items-start mb-6">
-            <div>
-                <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Nota Digital KickCare</h4>
-                <p class="font-roboto text-[11px] text-gray-400">{{ $transaction->created_at->format('d M Y') }}</p>
-            </div>
             <span class="bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
                 {{ $transaction->status }}
             </span>
@@ -36,7 +32,11 @@
         <div class="space-y-3 mb-6 bg-white p-2">
             <div class="flex justify-between text-[12px]">
                 <span class="font-roboto text-gray-400 italic">No. Referensi</span>
-                <span class="text-gray-800 font-bold font-mono">{{ $transaction->id }}</span>
+                <span class="text-gray-800 font-bold font-mono">{{ $transaction->transaction_code }}</span>
+            </div>
+            <div class="flex justify-between text-[12px]">
+                <span class="font-roboto text-gray-400 italic">Tanggal Transaksi</span>
+                <span class="text-gray-800 font-bold font-mono">{{ $transaction->created_at->format('d M Y') }}</span>
             </div>
             <div class="flex justify-between text-[12px]">
                 <span class="font-roboto text-gray-400 italic">Outlet</span>
