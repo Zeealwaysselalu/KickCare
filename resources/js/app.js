@@ -7,20 +7,11 @@ window.Alpine = Alpine;
 Alpine.start();
 
 function openDetail(id) {
-    const modal = document.getElementById('modalDetail');
     const content = document.getElementById('modalContent');
 
-    if (!modal || !content) return;
+    if (!content) return;
 
-    modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-
-    content.innerHTML = `
-        <div class="p-12 text-center animate-pulse">
-            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-500 font-roboto text-xs font-bold uppercase tracking-widest">Memuat Nota...</p>
-        </div>
-    `;
 
     fetch(`/transaksi/${id}`, {
         method: 'GET',

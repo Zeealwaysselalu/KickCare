@@ -32,7 +32,8 @@
                             <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold">Status</th>
                             <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold">Total Harga
                             </th>
-                            <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center"></th>
+                            <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center">
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -85,16 +86,26 @@
                                     Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
                                 </td>
                                 <td class="p-4 text-center">
-                                    <button data-id="{{ $transaction->id }}"
-                                        class="btn-detail p-2 rounded-lg text-gray-400 hover:text-blue-600 border border-transparent transition inline-block">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                            </path>
-                                        </svg>
-                                    </button>
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button data-id="{{ $transaction->id }}"
+                                            class="btn-detail inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 border border-transparent transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <button data-id="{{ $transaction->id }}"
+                                            class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
+                                            <span
+                                                class="text-red-600 text-[11px] px-2 rounded-full font-bold uppercase tracking-wide">
+                                                Batalkan
+                                            </span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -122,5 +133,4 @@
             </div>
         </div>
     </div>
-    <x-modal-detail />
 </x-app-layout>

@@ -56,6 +56,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/transaksi/{id}', [App\Http\Controllers\TransactionController::class, 'show'])->middleware(['auth', 'verified'])->name('transaksi.show');
+Route::patch('/transaction/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
 
 Route::middleware('auth')->group(function () {
     Route::get('/transaction', [TransactionController::class, 'create'])

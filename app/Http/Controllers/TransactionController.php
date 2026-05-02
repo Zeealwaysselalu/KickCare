@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Outlet;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -21,7 +22,7 @@ class TransactionController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-    {   
+    {
         $allOutlet = Outlet::all();
         $selectedService = $request->service; // ambil dari URL
 
@@ -73,6 +74,26 @@ class TransactionController extends Controller
             return view('components.show-transaction', compact('transaction'))->render();
         }
         return view('profile.role.user.order', compact('transaction'));
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        if ($transaction->user_id !== Auth::id() && Auth::user()->role === 'user') {
+            abort(403, 'Anda tidak memiliki akses untuk membatalkan pesanan ini.');
+        }
+
+        if ($transaction->status !== 'pending') {
+            return back()->with('error', 'Pesanan tidak dapat dibatalkan karena sudah diproses.');
+        }
+
+        $transaction->update([
+            'status' => 'cancelled', // sesuaikan dengan nama status di database Anda
+            'cancel_reason' => $request->cancel_reason // Jika Anda menambahkan kolom ini di DB
+        ]);
+
+        return redirect()->route('pesanan')->with('success', 'Pesanan berhasil dibatalkan.');
     }
 
     /**

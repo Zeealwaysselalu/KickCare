@@ -40,7 +40,7 @@
             </div>
             <div class="flex justify-between text-[12px]">
                 <span class="font-roboto text-gray-400 italic">Outlet</span>
-                <span class="text-gray-800 font-medium">{{ $transaction->outlet_id->name ?? 'Pusat' }}</span>
+                <span class="text-gray-800 font-medium">{{ $transaction->outlet->name }}</span>
             </div>
             <div class="pt-2 border-t border-gray-100 flex justify-between items-center">
                 <span class="font-roboto text-gray-500 text-[13px]">Total Pembayaran</span>
