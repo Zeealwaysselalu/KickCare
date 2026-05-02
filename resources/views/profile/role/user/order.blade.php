@@ -133,4 +133,5 @@
             </div>
         </div>
     </div>
+    <x-modal-detail/>
 </x-app-layout>
