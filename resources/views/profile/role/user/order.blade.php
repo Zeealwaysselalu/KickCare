@@ -34,6 +34,8 @@
                             </th>
                             <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center">
                             </th>
+                            <th class="p-4 text-[12px] uppercase tracking-wider text-gray-400 font-bold text-center">
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -41,15 +43,6 @@
                             <tr class="hover:bg-blue-50/30 transition-colors group">
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-blue-100 group-hover:text-blue-600 transition">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4">
-                                                </path>
-                                            </svg>
-                                        </div>
                                         <span
                                             class="text-[14px] font-semibold text-gray-800">{{ $transaction->shoes_name }}</span>
                                     </div>
@@ -68,11 +61,6 @@
                                     @elseif ($transaction->status === 'completed')
                                         <span
                                             class="inline-flex items-center bg-green-50 text-green-600 text-[11px] px-3 py-1 rounded-full font-bold uppercase tracking-tighter border border-green-100">
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd"
-                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
                                             Selesai
                                         </span>
                                     @elseif ($transaction->status === 'cancelled')
@@ -98,14 +86,18 @@
                                                 </path>
                                             </svg>
                                         </button>
-                                        <button data-id="{{ $transaction->id }}"
-                                            class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
-                                            <span
-                                                class="text-red-600 text-[11px] px-2 rounded-full font-bold uppercase tracking-wide">
-                                                Batalkan
-                                            </span>
-                                        </button>
                                     </div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    @if ($transaction->status === 'pending')
+                                            <button data-action="{{ route('transactions.cancel', $transaction->id) }}"
+                                                class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
+                                                <span
+                                                    class="text-red-600 text-[11px] px-2 rounded-full font-bold uppercase tracking-wide">
+                                                    Batalkan
+                                                </span>
+                                            </button>
+                                        @endif
                                 </td>
                             </tr>
                         @empty
@@ -133,5 +125,6 @@
             </div>
         </div>
     </div>
-    <x-modal-detail/>
+    <x-modal-detail />
+    <x-modal-cancel />
 </x-app-layout>

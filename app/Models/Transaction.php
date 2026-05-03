@@ -13,7 +13,9 @@ class Transaction extends Model
     'shoes_name',
     'service',
     'shoes_color',
+    'status',
     'total_price',
+    'cancel_reason',
     'transaction_code'
     ];
 

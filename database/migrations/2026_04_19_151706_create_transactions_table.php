@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('service', ['wash', 'unyellowing', 'repaint'])->default('wash');
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->string('cancel_reason')->nullable();
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });
