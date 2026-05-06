@@ -3,7 +3,7 @@
         <div class="mb-5 flex flex-col items-center">
             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Customer</p>
             <h2 class="font-montserrat font-extrabold text-lg text-gray-800 uppercase">
-                {{ $transaction->customer_name ?? 'Guest Customer' }}
+                {{ optional($transaction->transaction_item->first())->customer_name ?? 'Guest Customer' }}
             </h2>
         </div>
 
@@ -14,11 +14,11 @@
             </h3>
             <div class="flex items-center justify-center gap-2 mt-2">
                 <span class="px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-[9px] font-bold uppercase">
-                    {{ $transaction->shoes_color ?? 'Multi Color' }}
+                    {{ optional($transaction->transaction_item->first())->shoes_color ?? 'Multi Color' }}
                 </span>
                 <span class="text-gray-300">•</span>
                 <span class="text-[11px] text-gray-500 font-medium">
-                    {{ ucfirst($transaction->service) }} Service
+                    {{ ucfirst(optional($transaction->transaction_item->first())->service) }} Service
                 </span>
             </div>
         </div>
@@ -38,19 +38,19 @@
             </div>
             <div class="flex justify-between text-[12px]">
                 <span class="font-roboto text-gray-400">Status</span>
-                @if ($transaction->status === 'pending')
+                @if ($transaction->detail_transaction->status == 'pending')
                     <span class="text-gray-800 font-bold font-mono">Dalam Proses</span>
-                @elseif($transaction->status === 'completed')
+                @elseif($transaction->detail_transaction->status == 'completed')
                     <span class="text-gray-800 font-bold font-mono">Selesai</span>
-                @elseif($transaction->status === 'cancelled')
+                @elseif($transaction->detail_transaction->status == 'cancelled')
                     <span class="text-gray-800 font-bold font-mono">Dibatalkan</span>
                 @endif
             </div>
-            @if ($transaction->status === 'cancelled')
+            @if ($transaction->detail_transaction->status === 'cancelled')
                 <div class="flex justify-between text-[12px]">
                     <span class="font-roboto text-gray-400">Alasan Pembatalan</span>
                     <span
-                        class="text-gray-800 font-bold font-mono">{{ $transaction->cancel_reason ?? 'Tidak ada alasan' }}</span>
+                        class="text-gray-800 font-bold font-mono">{{ $transaction->detail_transaction->cancel_reason ?? 'Tidak ada alasan' }}</span>
                 </div>
             @endif
             <div class="pt-2 border-t border-gray-100 flex justify-between items-center">
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        @if ($transaction->status === 'pending')
+        @if ($transaction->detail_transaction->status === 'pending')
             <div
                 class="flex flex-col items-center justify-center p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl mb-6">
                 <div class="bg-white p-2 border border-gray-200 rounded-xl shadow-sm">

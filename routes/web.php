@@ -48,7 +48,7 @@ Route::get('/dashboard', function () {
         return app(OutletController::class)->index();
         }
     if ($role === 'user') {
-        $latestTransactions = Transaction::with(['transaction_item'])
+        $latestTransactions = Transaction::with(['transaction_item', 'detail_transaction'])
             ->where('user_id', Auth::id())
             ->latest()
             ->take(5)

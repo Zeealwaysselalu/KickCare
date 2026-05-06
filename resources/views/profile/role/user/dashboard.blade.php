@@ -241,14 +241,14 @@
                             <td class="p-4 text-[13px] text-[#6B7280] whitespace-nowrap">
                                 {{ $transaction->created_at->format('d M Y') }}</td>
                             <td class="p-4 whitespace-nowrap">
-                                @if ($transaction->status === 'pending')
+                                @if ($transaction->detail_transaction->status === 'pending')
                                     <span
                                         class="bg-blue-100 text-blue-600 text-[12px] px-3 py-1 rounded-full font-medium">Sedang
                                         Dicuci</span>
-                                @elseif ($transaction->status === 'completed')
+                                @elseif ($transaction->detail_transaction->status === 'completed')
                                     <span
                                         class="bg-green-100 text-green-600 text-[12px] px-3 py-1 rounded-full font-medium">Selesai</span>
-                                @elseif ($transaction->status === 'cancelled')
+                                @elseif ($transaction->detail_transaction->status === 'cancelled')
                                     <span
                                         class="bg-red-100 text-red-600 text-[12px] px-3 py-1 rounded-full font-medium">Dibatalkan</span>
                                 @endif

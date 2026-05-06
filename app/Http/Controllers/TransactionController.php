@@ -19,7 +19,7 @@ class TransactionController extends Controller
             'user',
             'transaction_item',
             'detail_transaction'
-        ])->get();
+        ])->latest()->get();
 
         return view('profile.role.user.order', [
             'allTransactions' => $dataTransaction
@@ -118,7 +118,7 @@ class TransactionController extends Controller
             abort(403, 'Anda tidak memiliki akses untuk membatalkan pesanan ini.');
         }
 
-        $detail = $transaction->detail;
+        $detail = $transaction->detail_transaction;
 
         if ($detail->status !== 'pending') {
             return back()->with('error', 'Pesanan tidak dapat dibatalkan karena sudah diproses.');

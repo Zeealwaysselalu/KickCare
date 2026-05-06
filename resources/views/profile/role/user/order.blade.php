@@ -52,19 +52,17 @@
                                     {{ $transaction->created_at->format('d M Y') }}
                                 </td>
                                 <td class="p-4 whitespace-nowrap">
-                                    @if ($transaction->status === 'pending')
+                                    @if ($transaction->detail_transaction->status === 'pending')
                                         <span
                                             class="inline-flex items-center bg-blue-50 text-blue-600 text-[11px] px-3 py-1 rounded-full font-bold uppercase tracking-tighter border border-blue-100">
-                                            <span
-                                                class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-1.5 animate-pulse"></span>
                                             Sedang Dicuci
                                         </span>
-                                    @elseif ($transaction->status === 'completed')
+                                    @elseif ($transaction->detail_transaction->status === 'completed')
                                         <span
                                             class="inline-flex items-center bg-green-50 text-green-600 text-[11px] px-3 py-1 rounded-full font-bold uppercase tracking-tighter border border-green-100">
                                             Selesai
                                         </span>
-                                    @elseif ($transaction->status === 'cancelled')
+                                    @elseif ($transaction->detail_transaction->status === 'cancelled')
                                         <span
                                             class="inline-flex items-center bg-red-50 text-red-600 text-[11px] px-3 py-1 rounded-full font-bold uppercase tracking-tighter border border-red-100">
                                             Dibatalkan
@@ -90,7 +88,7 @@
                                     </div>
                                 </td>
                                 <td class="p-4 text-center">
-                                    @if ($transaction->status === 'pending')
+                                    @if ($transaction->detail_transaction->status === 'pending')
                                         <button data-action="{{ route('transactions.cancel', $transaction->id) }}"
                                             class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
                                             <span
