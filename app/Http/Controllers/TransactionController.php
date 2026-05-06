@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Outlet;
-use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\{Outlet, Transaction};
 
 class TransactionController extends Controller
 {
@@ -14,8 +14,16 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $dataTransaction = Transaction::with('outlet', 'user')->get();
-        return view('profile.role.user.dashboard', ['allTransactions' => $dataTransaction]);
+        $dataTransaction = Transaction::with([
+            'outlet',
+            'user',
+            'transaction_item',
+            'detail_transaction'
+        ])->get();
+
+        return view('profile.role.user.order', [
+            'allTransactions' => $dataTransaction
+        ]);
     }
 
     /**
@@ -38,10 +46,11 @@ class TransactionController extends Controller
             'outlet_id' => 'required|exists:outlets,id',
             'customer_name' => 'required|string|max:255',
             'shoes_name' => 'required|string|max:255',
-            'service' => 'required|string|in:wash,unyellowing,repaint',
-            'shoes_color' => 'required|string|max:255',
+            'service' => 'required|in:wash,unyellowing,repaint',
+            'shoes_color' => 'nullable|string|max:255',
             'total_price' => 'required|numeric|min:0',
         ]);
+
         $today = now()->format('Ymd');
         $lastTransaction = Transaction::whereDate('created_at', now()->today())
             ->orderBy('id', 'desc')
@@ -53,14 +62,33 @@ class TransactionController extends Controller
         } else {
             $nextNumber = '0001';
         }
+
         $transactionCode = 'KC-' . $today . '-' . $nextNumber;
-        $data = $request->all();
-        $data['transaction_code'] = $transactionCode;
-        $data['user_id'] = auth()->id();
 
-        Transaction::create($data);
+        $transaction = Transaction::create([
+            'transaction_code' => $transactionCode,
+            'outlet_id' => $request->outlet_id,
+            'user_id' => auth()->id(),
+            'total_price' => $request->total_price,
+        ]);
 
-        return redirect()->route('pesanan')->with('success', 'Transaksi berhasil dibuat.');
+        \App\Models\TransactionItem::create([
+            'transaction_id' => $transaction->id,
+            'customer_name' => $request->customer_name,
+            'shoes_name' => $request->shoes_name,
+            'shoes_color' => $request->shoes_color,
+            'service' => $request->service,
+        ]);
+
+        \App\Models\DetailTransaction::create([
+            'transaction_id' => $transaction->id,
+            'status' => 'pending',
+            'progress_status' => 'pending',
+            'cancel_reason' => null,
+        ]);
+
+        return redirect()->route('pesanan')
+            ->with('success', 'Transaksi berhasil dibuat.');
     }
 
     /**
@@ -68,11 +96,17 @@ class TransactionController extends Controller
      */
     public function show(string $id)
     {
-        $transaction = Transaction::findOrFail($id);
+        $transaction = Transaction::with([
+            'outlet',
+            'user',
+            'transaction_item',
+            'detail_transaction'
+        ])->findOrFail($id);
 
         if (request()->ajax()) {
             return view('components.show-transaction', compact('transaction'))->render();
         }
+
         return view('profile.role.user.order', compact('transaction'));
     }
 
@@ -84,16 +118,20 @@ class TransactionController extends Controller
             abort(403, 'Anda tidak memiliki akses untuk membatalkan pesanan ini.');
         }
 
-        if ($transaction->status !== 'pending') {
+        $detail = $transaction->detail;
+
+        if ($detail->status !== 'pending') {
             return back()->with('error', 'Pesanan tidak dapat dibatalkan karena sudah diproses.');
         }
 
-        $transaction->update([
-            'status' => 'cancelled', // sesuaikan dengan nama status di database Anda
-            'cancel_reason' => $request->cancel_reason // Jika Anda menambahkan kolom ini di DB
+        $detail->update([
+            'status' => 'cancelled',
+            'progress_status' => 'cancelled',
+            'cancel_reason' => $request->cancel_reason
         ]);
 
-        return redirect()->route('pesanan')->with('success', 'Pesanan berhasil dibatalkan.');
+        return redirect()->route('pesanan')
+            ->with('success', 'Pesanan berhasil dibatalkan.');
     }
 
     /**

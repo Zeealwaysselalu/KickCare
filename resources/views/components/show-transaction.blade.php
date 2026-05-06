@@ -10,7 +10,7 @@
         <div class="mb-6 text-center py-5 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
             <span class="block text-[10px] text-blue-600 font-bold uppercase mb-1">Item & Treatment</span>
             <h3 class="font-montserrat font-bold text-[18px] text-gray-800 leading-tight px-4">
-                {{ $transaction->shoes_name }}
+                {{ optional($transaction->transaction_item->first())->shoes_name ?? '-' }}
             </h3>
             <div class="flex items-center justify-center gap-2 mt-2">
                 <span class="px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-[9px] font-bold uppercase">

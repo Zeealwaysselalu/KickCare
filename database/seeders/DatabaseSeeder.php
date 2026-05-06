@@ -4,23 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{Outlet, Transaction, User};
+
+use App\Models\{DetailTransaction, Outlet, Transaction, TransactionItem, User};
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        User::create([
+        $admin = User::create([
             'username' => 'Administrator',
             'email' => 'admin@kickcare.com',
             'password' => Hash::make('password'),
@@ -28,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'balance' => 0,
         ]);
 
-        User::create([
+        $cashier1 = User::create([
             'username' => 'CashierVeteran',
             'email' => 'kasirveteran@kickcare.com',
             'password' => Hash::make('password'),
@@ -36,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'balance' => 0,
         ]);
 
-        User::create([
+        $cashier2 = User::create([
             'username' => 'CashierSepong',
             'email' => 'kasirserpong@kickcare.com',
             'password' => Hash::make('password'),
@@ -44,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'balance' => 0,
         ]);
 
-        User::create([
+        $user = User::create([
             'username' => 'User',
             'name' => 'John Doe',
             'email' => 'user@gmail.com',
@@ -55,156 +46,65 @@ class DatabaseSeeder extends Seeder
             'status_member' => 'bronze',
         ]);
 
-        User::create([
-            'username' => 'User1',
-            'name' => 'John Doe',
-            'email' => 'user1@gmail.com',
-            'phone' => '081234567890',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'balance' => 50000,
-            'status_member' => 'silver',
-        ]);
+        $outlets = [
+            Outlet::create([
+                'name' => 'Outlet Veteran',
+                'address' => 'Jl. Veteran No. 123, Tangerang',
+                'user_id' => $cashier1->id,
+            ]),
+            Outlet::create([
+                'name' => 'Outlet Serpong',
+                'address' => 'Jl. Serpong No. 456, Tangerang',
+                'user_id' => $cashier2->id,
+            ]),
+        ];
 
-        User::create([
-            'username' => 'User2',
-            'name' => 'John Doe',
-            'email' => 'user2@gmail.com',
-            'phone' => '081234567890',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'balance' => 50000,
-            'status_member' => 'gold',
-        ]);
+        $shoesList = [
+            'Nike Air Max',
+            'Adidas Ultraboost',
+            'Puma RS-X',
+            'Reebok Classic',
+            'New Balance 574',
+            'Vans Old Skool',
+            'Converse Chuck Taylor',
+            'Asics Gel Lyte',
+        ];
 
-        Outlet::create([
-            'name' => 'Outlet Veteran',
-            'address' => 'Jl. Veteran No. 123, Tangerang',
-            'user_id' => 3,
-        ]);
+        $services = ['wash', 'unyellowing', 'repaint'];
 
-        Outlet::create([
-            'name' => 'Outlet Serpong',
-            'address' => 'Jl. Serpong No. 456, Tangerang',
-            'user_id'=> 4,
-        ]);
+        $code = 1;
 
-        Transaction::create([
-            'transaction_code' => 'KC0000',
-            'shoes_name' => 'Nike Air Max',
-            'customer_name' => 'John Doe',
-            'outlet_id' => 1,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 250000.00,
-        ]);
+        foreach ($outlets as $outlet) {
 
-        Transaction::create([
-            'transaction_code' => 'KC0001',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Adidas Ultraboost',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 1,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 300000.00,
-        ]);
+            for ($i = 0; $i < 5; $i++) {
 
-        Transaction::create([
-            'transaction_code' => 'KC0002',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Puma RS-X',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 1,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 200000.00,
-        ]);
+                $transaction = Transaction::create([
+                    'transaction_code' => 'KC' . str_pad($code, 4, '0', STR_PAD_LEFT),
+                    'outlet_id' => $outlet->id,
+                    'user_id' => $user->id,
+                    'total_price' => rand(100000, 300000),
+                ]);
 
-        Transaction::create([
-            'transaction_code' => 'KC0003',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Reebok Classic',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 1,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 150000.00,
-        ]);
+                $shoes = $shoesList[array_rand($shoesList)];
+                $service = $services[array_rand($services)];
 
-        Transaction::create([
-            'transaction_code' => 'KC0004',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'New Balance 574',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 1,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 180000.00,
-        ]);
+                TransactionItem::create([
+                    'transaction_id' => $transaction->id,
+                    'customer_name' => 'John Doe',
+                    'shoes_name' => $shoes,
+                    'shoes_color' => 'Black/White',
+                    'service' => $service,
+                ]);
 
-        Transaction::create([
-            'transaction_code' => 'KC0005',
-            'shoes_name' => 'Nike Air Max',
-            'customer_name' => 'John Doe',
-            'outlet_id' => 2,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 250000.00,
-        ]);
+                DetailTransaction::create([
+                    'transaction_id' => $transaction->id,
+                    'status' => 'completed',
+                    'progress_status' => 'ready',
+                    'cancel_reason' => null,
+                ]);
 
-        Transaction::create([
-            'transaction_code' => 'KC0006',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Adidas Ultraboost',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 2,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 300000.00,
-        ]);
-
-        Transaction::create([
-            'transaction_code' => 'KC0007',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Puma RS-X',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 2,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 200000.00,
-        ]);
-
-        Transaction::create([
-            'transaction_code' => 'KC0008',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'Reebok Classic',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 2,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 150000.00,
-        ]);
-
-        Transaction::create([
-            'transaction_code' => 'KC0009',
-            'customer_name' => 'John Doe',
-            'shoes_name' => 'New Balance 574',
-            'shoes_color' => 'Black/White',
-            'outlet_id' => 2,
-            'user_id' => 4,
-            'service' => 'wash',
-            'status' => 'completed',
-            'total_price' => 180000.00,
-        ]);
+                $code++;
+            }
+        }
     }
 }

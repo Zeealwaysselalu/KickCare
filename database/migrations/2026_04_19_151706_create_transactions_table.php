@@ -14,16 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_code')->unique();
-            $table->string('customer_name')->nullable();
-            $table->string('shoes_name');
-            $table->string('shoes_color')->nullable();
             $table->unsignedBigInteger('outlet_id');
             $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('service', ['wash', 'unyellowing', 'repaint'])->default('wash');
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
-            $table->string('cancel_reason')->nullable();
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Outlet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Outlet;
 
 class OutletController extends Controller
 {

@@ -43,8 +43,9 @@
                             <tr class="hover:bg-blue-50/30 transition-colors group">
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
-                                        <span
-                                            class="text-[14px] font-semibold text-gray-800">{{ $transaction->shoes_name }}</span>
+                                        <span class="text-[14px] font-semibold text-gray-800">
+                                            {{ optional($transaction->transaction_item->first())->shoes_name ?? '-' }}
+                                        </span>
                                     </div>
                                 </td>
                                 <td class="p-4 text-[13px] text-gray-500 whitespace-nowrap">
@@ -90,14 +91,14 @@
                                 </td>
                                 <td class="p-4 text-center">
                                     @if ($transaction->status === 'pending')
-                                            <button data-action="{{ route('transactions.cancel', $transaction->id) }}"
-                                                class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
-                                                <span
-                                                    class="text-red-600 text-[11px] px-2 rounded-full font-bold uppercase tracking-wide">
-                                                    Batalkan
-                                                </span>
-                                            </button>
-                                        @endif
+                                        <button data-action="{{ route('transactions.cancel', $transaction->id) }}"
+                                            class="btn-cancel inline-flex items-center justify-center p-2 rounded-lg border border-transparent hover:bg-red-50 transition">
+                                            <span
+                                                class="text-red-600 text-[11px] px-2 rounded-full font-bold uppercase tracking-wide">
+                                                Batalkan
+                                            </span>
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

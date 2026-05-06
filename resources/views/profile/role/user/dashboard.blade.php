@@ -9,12 +9,12 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-12 gap-6">
+        <div class="grid grid-cols-12 gap-6 items-stretch">
 
-            <div class="col-span-12 mb-4 animate-up">
+            <div class="col-span-12 lg:col-span-8 animate-up">
                 @if ($dataprofil->status_member === 'bronze')
                     <div
-                        class="bg-gradient-to-br from-[#A855F7] to-[#EC4899] rounded-[16px] p-8 relative overflow-hidden card-shadow min-h-[200px] flex flex-col justify-center">
+                        class="bg-gradient-to-br from-[#A855F7] to-[#EC4899] rounded-[20px] p-8 relative overflow-hidden card-shadow h-full flex flex-col justify-center min-h-[200px]">
                         <div class="relative z-10">
                             <span
                                 class="bg-white/20 text-white font-roboto text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-white/20">Standard
@@ -25,15 +25,14 @@
                             <p class="font-roboto text-white/90 text-sm mt-1 max-w-xl">Diskon 5% untuk setiap
                                 Unyellowing Treatment.</p>
                             <a href="{{ route('benefits') }}"
-                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
-                                Lihat Benefit
-                            </a>
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner">Lihat
+                                Benefit</a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>
                 @elseif ($dataprofil->status_member === 'silver')
                     <div
-                        class="bg-gradient-to-br from-[#22C55E] to-[#14B8A6] rounded-[16px] p-8 relative overflow-hidden card-shadow min-h-[200px] flex flex-col justify-center">
+                        class="bg-gradient-to-br from-[#22C55E] to-[#14B8A6] rounded-[20px] p-8 relative overflow-hidden card-shadow h-full flex flex-col justify-center min-h-[200px]">
                         <div class="relative z-10">
                             <span
                                 class="bg-white/20 text-white font-roboto text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-white/20">Elite
@@ -44,15 +43,14 @@
                             <p class="font-roboto text-white/90 text-sm mt-1 max-w-xl">Gratis Antar-Jemput & diskon 10%
                                 Repaint Treatment.</p>
                             <a href="{{ route('benefits') }}"
-                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
-                                Lihat Benefit
-                            </a>
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner">Lihat
+                                Benefit</a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>
                 @elseif ($dataprofil->status_member == 'gold')
                     <div
-                        class="bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-[16px] p-8 relative overflow-hidden card-shadow min-h-[200px] flex flex-col justify-center">
+                        class="bg-gradient-to-br from-[#3B82F6] to-[#06B6D4] rounded-[20px] p-8 relative overflow-hidden card-shadow h-full flex flex-col justify-center min-h-[200px]">
                         <div class="relative z-10">
                             <span
                                 class="bg-white/20 text-white font-roboto text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-white/20">Premium
@@ -63,131 +61,212 @@
                             <p class="font-roboto text-white/95 text-sm mt-1 max-w-xl">Diskon 20% Deep Clean Treatment
                                 sepanjang tahun.</p>
                             <a href="{{ route('benefits') }}"
-                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner text-center">
-                                Lihat Benefit
-                            </a>
+                                class="mt-5 inline-block bg-white/10 hover:bg-white/20 border border-white/30 text-white font-roboto font-medium px-6 py-2 rounded-full text-xs transition backdrop-blur-sm shadow-inner">Lihat
+                                Benefit</a>
                         </div>
                         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
                     </div>
                 @endif
             </div>
-        </div>
 
-        <div class="col-span-12 mt-8">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="font-montserrat font-semibold text-[20px] text-gray-800">Pesan Layanan Baru</h2>
-            </div>
+            <div class="col-span-12 lg:col-span-4 animate-up" style="animation-delay: 100ms">
+                <div class="bg-white border border-gray-100 rounded-[20px] p-6 card-shadow h-full flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-montserrat font-bold text-gray-800 text-lg">Status Terakhir</h3>
+                        <div class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div
-                    class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
-                    <div
-                        class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#3B82F6] mb-4 group-hover:bg-[#3B82F6] group-hover:text-white transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Deep Clean</h3>
-                    <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Pembersihan menyeluruh luar & dalam.</p>
-                    <div class="mt-4 flex items-center justify-between">
-                        <span class="text-[#3B82F6] font-bold text-sm">Rp 65k</span>
-                        <a href="{{ route('transactions.create', ['service' => 'wash']) }}"
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
-                            Pilih
-                        </a>
-                    </div>
-                </div>
+                    @php $latest = $latestTransactions->first(); @endphp
 
-                <div
-                    class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
-                    <div
-                        class="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center text-[#F4B400] mb-4 group-hover:bg-[#F4B400] group-hover:text-white transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Unyellowing</h3>
-                    <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Menghilangkan noda kuning di midsole.</p>
-                    <div class="mt-4 flex items-center justify-between">
-                        <span class="text-[#3B82F6] font-bold text-sm">Rp 100k</span>
-                        <a href="{{ route('transactions.create', ['service' => 'unyellowing']) }}"
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
-                            Pilih
-                        </a>
-                    </div>
-                </div>
+                    @if ($latest)
+                        <div class="flex-1">
+                            <div class="mb-4">
+                                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Sepatu</p>
+                                <p class="text-sm font-semibold text-gray-700 truncate">{{ $latest->shoes_name }}</p>
+                            </div>
 
-                <div
-                    class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
-                    <div
-                        class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 mb-4 group-hover:bg-purple-500 group-hover:text-white transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L16.657 13" />
-                        </svg>
-                    </div>
-                    <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Repaint</h3>
-                    <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Kembalikan warna sepatu seperti baru.</p>
-                    <div class="mt-4 flex items-center justify-between">
-                        <span class="text-[#3B82F6] font-bold text-sm">Rp 150k</span>
-                        <a href="{{ route('transactions.create', ['service' => 'repaint']) }}"
-                            class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
-                            Pilih
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="relative">
+                                <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
 
-        <div class="col-span-12 mt-4">
-            <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
-                <h2 class="font-montserrat font-semibold text-[20px] mb-4 text-gray-800">Aktivitas Terakhir</h2>
-                <form action="{{ route('pesanan') }}" method="GET">
-                    <button type="submit" class="text-blue-600 text-xs font-medium hover:underline">Lihat
-                        Semua</button>
-                </form>
-            </div>
-            <div class="bg-white rounded-[14px] card-shadow overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        @forelse ($latestTransactions as $transaction)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-4 text-[14px] font-medium text-[#1F2937]">
-                                    {{ $transaction->shoes_name }}</td>
-                                <td class="p-4 text-[13px] text-[#6B7280] whitespace-nowrap">
-                                    {{ $transaction->created_at->format('d M Y') }}</td>
-                                <td class="p-4 whitespace-nowrap">
-                                    @if ($transaction->status === 'pending')
-                                        <span
-                                            class="bg-blue-100 text-blue-600 text-[12px] px-3 py-1 rounded-full font-medium">Sedang
-                                            Dicuci</span>
-                                    @elseif ($transaction->status === 'completed')
-                                        <span
-                                            class="bg-green-100 text-green-600 text-[12px] px-3 py-1 rounded-full font-medium">Selesai</span>
-                                    @elseif ($transaction->status === 'cancelled')
-                                        <span
-                                            class="bg-red-100 text-red-600 text-[12px] px-3 py-1 rounded-full font-medium">Dibatalkan</span>
-                                    @endif
-                                </td>
-                                <td class="p-4 text-[14px] font-bold text-[#1F2937] whitespace-nowrap">Rp
-                                    {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
-                            </tr>
+                                <div class="relative flex items-start gap-4 mb-4">
+                                    <div
+                                        class="mt-1.5 w-[24px] h-[24px] rounded-full border-4 border-white shadow-sm flex items-center justify-center z-10 {{ $latest->status == 'pending' ? 'bg-blue-500 ring-4 ring-blue-50' : 'bg-green-500' }}">
+                                        @if ($latest->status == 'completed')
+                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="text-xs font-bold {{ $latest->status == 'pending' ? 'text-blue-600' : 'text-gray-400' }}">
+                                            Sedang Dicuci</p>
+                                        <p class="text-[10px] text-gray-400">{{ $latest->created_at->format('H:i') }}
+                                            WIB</p>
+                                    </div>
+                                </div>
 
-                        @empty
-                            <tr>
-                                <td colspan="4" class="p-4 text-center text-gray-500">Kamu belum memulai
-                                    transaksi!</td>
-                            </tr>
-                        @endforelse
-                    </table>
+                                <div class="relative flex items-start gap-4">
+                                    <div
+                                        class="mt-1.5 w-[24px] h-[24px] rounded-full border-4 border-white shadow-sm flex items-center justify-center z-10 {{ $latest->status == 'completed' ? 'bg-green-500 ring-4 ring-green-50' : 'bg-gray-200' }}">
+                                        @if ($latest->status == 'completed')
+                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="text-xs font-bold {{ $latest->status == 'completed' ? 'text-green-600' : 'text-gray-300' }}">
+                                            Selesai & Siap Diambil</p>
+                                        @if ($latest->status == 'completed')
+                                            <p class="text-[10px] text-gray-400">
+                                                {{ $latest->updated_at->format('d M') }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="flex-1 flex flex-col items-center justify-center text-center">
+                            <p class="text-sm text-gray-400">Belum ada aktivitas transaksi.</p>
+                        </div>
+                    @endif
+
+                    <a href="{{ route('pesanan') }}"
+                        class="mt-4 block text-center py-2 text-[11px] font-bold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition uppercase tracking-wide">
+                        Detail Pesanan
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="col-span-12 mt-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-montserrat font-semibold text-[20px] text-gray-800">Pesan Layanan Baru</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+                class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
+                <div
+                    class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-[#3B82F6] mb-4 group-hover:bg-[#3B82F6] group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Deep Clean</h3>
+                <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Pembersihan menyeluruh luar & dalam.</p>
+                <div class="mt-4 flex items-center justify-between">
+                    <span class="text-[#3B82F6] font-bold text-sm">Rp 65k</span>
+                    <a href="{{ route('transactions.create', ['service' => 'wash']) }}"
+                        class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                        Pilih
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
+                <div
+                    class="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center text-[#F4B400] mb-4 group-hover:bg-[#F4B400] group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Unyellowing</h3>
+                <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Menghilangkan noda kuning di midsole.</p>
+                <div class="mt-4 flex items-center justify-between">
+                    <span class="text-[#3B82F6] font-bold text-sm">Rp 100k</span>
+                    <a href="{{ route('transactions.create', ['service' => 'unyellowing']) }}"
+                        class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                        Pilih
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="bg-white p-5 rounded-[14px] card-shadow border border-transparent hover:border-[#3B82F6] transition group cursor-pointer">
+                <div
+                    class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 mb-4 group-hover:bg-purple-500 group-hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L16.657 13" />
+                    </svg>
+                </div>
+                <h3 class="font-montserrat font-bold text-[#1F2937] text-lg">Repaint</h3>
+                <p class="text-[#6B7280] text-xs mt-1 leading-relaxed">Kembalikan warna sepatu seperti baru.</p>
+                <div class="mt-4 flex items-center justify-between">
+                    <span class="text-[#3B82F6] font-bold text-sm">Rp 150k</span>
+                    <a href="{{ route('transactions.create', ['service' => 'repaint']) }}"
+                        class="bg-gray-100 text-[#1F2937] text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#3B82F6] hover:text-white transition">
+                        Pilih
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-span-12 mt-4">
+        <div class="px-6 py-4 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
+            <h2 class="font-montserrat font-semibold text-[20px] mb-4 text-gray-800">Aktivitas Terakhir</h2>
+            <form action="{{ route('pesanan') }}" method="GET">
+                <button type="submit" class="text-blue-600 text-xs font-medium hover:underline">Lihat
+                    Semua</button>
+            </form>
+        </div>
+        <div class="bg-white rounded-[14px] card-shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    @forelse ($latestTransactions as $transaction)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-4 text-[14px] font-medium text-[#1F2937]">
+                                {{ optional($transaction->transaction_item->first())->shoes_name ?? '-' }}
+                            </td>
+                            <td class="p-4 text-[13px] text-[#6B7280] whitespace-nowrap">
+                                {{ $transaction->created_at->format('d M Y') }}</td>
+                            <td class="p-4 whitespace-nowrap">
+                                @if ($transaction->status === 'pending')
+                                    <span
+                                        class="bg-blue-100 text-blue-600 text-[12px] px-3 py-1 rounded-full font-medium">Sedang
+                                        Dicuci</span>
+                                @elseif ($transaction->status === 'completed')
+                                    <span
+                                        class="bg-green-100 text-green-600 text-[12px] px-3 py-1 rounded-full font-medium">Selesai</span>
+                                @elseif ($transaction->status === 'cancelled')
+                                    <span
+                                        class="bg-red-100 text-red-600 text-[12px] px-3 py-1 rounded-full font-medium">Dibatalkan</span>
+                                @endif
+                            </td>
+                            <td class="p-4 text-[14px] font-bold text-[#1F2937] whitespace-nowrap">Rp
+                                {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
+                        </tr>
+
+                    @empty
+                        <tr>
+                            <td colspan="4" class="p-4 text-center text-gray-500">Kamu belum memulai
+                                transaksi!</td>
+                        </tr>
+                    @endforelse
+                </table>
+            </div>
+        </div>
+    </div>
 
     </div>
     </div>

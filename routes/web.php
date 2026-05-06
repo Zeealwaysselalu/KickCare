@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\{Auth, Route};
+
 use App\Http\Controllers\{OutletController, ProfileController, TransactionController};
 use App\Models\{Outlet, Transaction};
 
@@ -36,10 +37,7 @@ Route::get('/service', function () {
     return view('profile.role.user.customer-service');
 })->middleware(['auth', 'verified'])->name('service');
 
-Route::get('/transaksi', function () {
-    return view('profile.role.user.order')
-        ->with('allTransactions', Transaction::where('user_id', Auth::id())->latest()->get());
-})->middleware(['auth', 'verified'])->name('pesanan');
+Route::get('/transaksi', [App\Http\Controllers\TransactionController::class, 'index'])->middleware(['auth', 'verified'])->name('pesanan');
 
 Route::get('/dashboard', function () {
     $role = Auth::user()->role;
@@ -49,9 +47,15 @@ Route::get('/dashboard', function () {
     if ($role == 'cashier') {
         return app(OutletController::class)->index();
         }
-    if ($role == 'user') {
+    if ($role === 'user') {
+        $latestTransactions = Transaction::with(['transaction_item'])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('profile.role.user.dashboard')
-            ->with('latestTransactions', Transaction::where('user_id', Auth::id())->latest()->take(5)->get());
+            ->with('latestTransactions', $latestTransactions);
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 

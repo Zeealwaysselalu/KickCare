@@ -7,16 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $fillable = [
-    'outlet_id',
-    'user_id',
-    'customer_name',
-    'shoes_name',
-    'service',
-    'shoes_color',
-    'status',
-    'total_price',
-    'cancel_reason',
-    'transaction_code'
+        'outlet_id',
+        'user_id',
+        'total_price',
+        'transaction_code'
     ];
 
 
@@ -32,5 +26,15 @@ class Transaction extends Model
     public function outlet()
     {
         return $this->belongsTo(Outlet::class);
+    }
+
+    public function transaction_item()
+    {
+        return $this->hasMany(TransactionItem::class, 'transaction_id');
+    }
+
+    public function detail_transaction()
+    {
+        return $this->hasOne(DetailTransaction::class, 'transaction_id');
     }
 }
