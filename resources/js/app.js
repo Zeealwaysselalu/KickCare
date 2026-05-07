@@ -114,6 +114,9 @@ function initTransactionForm() {
     const total = document.getElementById("total-price");
     const inputTotal = document.getElementById("input-total-price");
     const displayOutlet = document.getElementById("selected-outlet");
+    const displayDiscount = document.getElementById("discount");
+    const inputDiscount = document.getElementById("input-discount");
+    const inputStatusMember = document.getElementById("input-status-member");
 
     if (!serviceRadios.length) return;
 

@@ -134,6 +134,8 @@
                                 </div>
                             </label>
                             <input type="hidden" name="total_price" id="input-total-price" value="0">
+                            <input type="hidden" name="discount" id="input-discount" value="0">
+                            <input type="hidden" name="status_member" id="input-status-member" value="{{ Auth::user()->status_member ?? 'bronze' }}">
                         </div>
                     </div>
                 </form>
@@ -154,6 +156,10 @@
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-400">Subtotal Layanan</span>
                                 <span class="font-mono" id="display-price">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-400">Diskon</span>
+                                <span class="font-mono" id="discount">Rp 0</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-400">Outlet</span>

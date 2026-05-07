@@ -26,7 +26,8 @@ Route::get('/dashboard1', function () {
 });
 
 Route::get('/benefits', function () {
-    return view('profile.role.user.benefits');
+    $countTransaction = Transaction::where('user_id', Auth::id())->count();
+    return view('profile.role.user.benefits', compact('countTransaction'));
 })->middleware(['auth', 'verified'])->name('benefits');
 
 Route::get('/about', function () {

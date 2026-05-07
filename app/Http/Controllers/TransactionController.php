@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\{Outlet, Transaction, User};
+use App\Models\DetailTransaction;
+use App\Models\TransactionItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\{Outlet, Transaction};
 
 class TransactionController extends Controller
 {
@@ -51,6 +52,13 @@ class TransactionController extends Controller
             'total_price' => 'required|numeric|min:0',
         ]);
 
+        // $countTransaction = Transaction::where('user_id', auth()->id())->count();
+        // if ($countTransaction >= 10) {
+        //     User::where('id', auth()->id())->update(['status_member' => 'silver']);
+        // } elseif ($countTransaction >= 20) {
+        //     User::where('id', auth()->id())->update(['status_member' => 'gold']);
+        // }
+
         $today = now()->format('Ymd');
         $lastTransaction = Transaction::whereDate('created_at', now()->today())
             ->orderBy('id', 'desc')
@@ -68,11 +76,11 @@ class TransactionController extends Controller
         $transaction = Transaction::create([
             'transaction_code' => $transactionCode,
             'outlet_id' => $request->outlet_id,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'total_price' => $request->total_price,
         ]);
 
-        \App\Models\TransactionItem::create([
+        TransactionItem::create([
             'transaction_id' => $transaction->id,
             'customer_name' => $request->customer_name,
             'shoes_name' => $request->shoes_name,
@@ -80,7 +88,7 @@ class TransactionController extends Controller
             'service' => $request->service,
         ]);
 
-        \App\Models\DetailTransaction::create([
+        DetailTransaction::create([
             'transaction_id' => $transaction->id,
             'status' => 'pending',
             'progress_status' => 'pending',
