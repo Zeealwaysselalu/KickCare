@@ -2,45 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Outlet, Transaction, User};
-use App\Models\DetailTransaction;
-use App\Models\TransactionItem;
+use App\Models\{Outlet, Transaction, User, DetailTransaction, TransactionItem};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $dataTransaction = Transaction::with([
             'outlet',
-            'user',
             'transaction_item',
             'detail_transaction'
-        ])->latest()->get();
+        ])->where('user_id', Auth::id())->latest()->get();
 
         return view('profile.role.user.order', [
             'allTransactions' => $dataTransaction
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
         $allOutlet = Outlet::all();
-        $selectedService = $request->service; // ambil dari URL
-
+        $selectedService = $request->service;
         return view('profile.role.user.transaction', compact('selectedService', 'allOutlet'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -49,64 +37,84 @@ class TransactionController extends Controller
             'shoes_name' => 'required|string|max:255',
             'service' => 'required|in:wash,unyellowing,repaint',
             'shoes_color' => 'nullable|string|max:255',
-            'total_price' => 'required|numeric|min:0',
         ]);
 
-        // $countTransaction = Transaction::where('user_id', auth()->id())->count();
-        // if ($countTransaction >= 10) {
-        //     User::where('id', auth()->id())->update(['status_member' => 'silver']);
-        // } elseif ($countTransaction >= 20) {
-        //     User::where('id', auth()->id())->update(['status_member' => 'gold']);
-        // }
+        return DB::transaction(function () use ($request) {
+            $user = Auth::user();
 
-        $today = now()->format('Ymd');
-        $lastTransaction = Transaction::whereDate('created_at', now()->today())
-            ->orderBy('id', 'desc')
-            ->first();
+            // 1. HITUNG HARGA AMAN (Server Side)
+            $prices = [
+                'wash' => 65000,
+                'unyellowing' => 80000,
+                'repaint' => 150000
+            ];
 
-        if ($lastTransaction) {
-            $lastNumber = substr($lastTransaction->transaction_code, -4);
-            $nextNumber = str_pad((int)$lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $nextNumber = '0001';
-        }
+            $basePrice = $prices[$request->service];
+            $discountPercent = 0;
 
-        $transactionCode = 'KC-' . $today . '-' . $nextNumber;
+            // Sesuaikan dengan logic Benefit Page
+            if ($user->status_member === 'bronze') $discountPercent = 0.05;
+            elseif ($user->status_member === 'silver') $discountPercent = 0.10;
+            elseif ($user->status_member === 'gold') $discountPercent = 0.20;
 
-        $transaction = Transaction::create([
-            'transaction_code' => $transactionCode,
-            'outlet_id' => $request->outlet_id,
-            'user_id' => Auth::id(),
-            'total_price' => $request->total_price,
-        ]);
+            $discountAmount = $basePrice * $discountPercent;
+            $finalPrice = $basePrice - $discountAmount;
 
-        TransactionItem::create([
-            'transaction_id' => $transaction->id,
-            'customer_name' => $request->customer_name,
-            'shoes_name' => $request->shoes_name,
-            'shoes_color' => $request->shoes_color,
-            'service' => $request->service,
-        ]);
+            // 2. GENERATE KODE TRANSAKSI
+            $today = now()->format('Ymd');
+            $lastTransaction = Transaction::whereDate('created_at', now()->today())
+                ->orderBy('id', 'desc')
+                ->first();
 
-        DetailTransaction::create([
-            'transaction_id' => $transaction->id,
-            'status' => 'pending',
-            'progress_status' => 'pending',
-            'cancel_reason' => null,
-        ]);
+            $nextNumber = $lastTransaction
+                ? str_pad((int)substr($lastTransaction->transaction_code, -4) + 1, 4, '0', STR_PAD_LEFT)
+                : '0001';
 
-        return redirect()->route('pesanan')
-            ->with('success', 'Transaksi berhasil dibuat.');
+            $transactionCode = 'KC-' . $today . '-' . $nextNumber;
+
+            // 3. SIMPAN DATA
+            $transaction = Transaction::create([
+                'transaction_code' => $transactionCode,
+                'outlet_id' => $request->outlet_id,
+                'user_id' => $user->id,
+                'total_price' => $finalPrice, // Pakai hasil hitungan server
+            ]);
+
+            TransactionItem::create([
+                'transaction_id' => $transaction->id,
+                'customer_name' => $request->customer_name,
+                'shoes_name' => $request->shoes_name,
+                'shoes_color' => $request->shoes_color,
+                'service' => $request->service,
+            ]);
+
+            DetailTransaction::create([
+                'transaction_id' => $transaction->id,
+                'status' => 'pending',
+                'progress_status' => 'pending',
+            ]);
+
+            // 4. LOGIKA UPGRADE MEMBER (Opsional: Hitung transaksi yang sudah selesai)
+            $completedCount = Transaction::where('user_id', $user->id)
+                ->whereHas('detail_transaction', function ($q) {
+                    $q->where('status', 'completed');
+                })->count();
+
+            if ($completedCount >= 20) {
+                User::where('id', $user->id)->update(['status_member' => 'gold']);
+            } elseif ($completedCount >= 10) {
+                User::where('id', $user->id)->update(['status_member' => 'silver']);
+            }
+
+            return redirect()->route('pesanan')
+                ->with('success', 'Pesanan ' . $transactionCode . ' berhasil dibuat!');
+        });
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $transaction = Transaction::with([
             'outlet',
-            'user',
             'transaction_item',
             'detail_transaction'
         ])->findOrFail($id);
@@ -120,49 +128,41 @@ class TransactionController extends Controller
 
     public function cancel(Request $request, $id)
     {
-        $transaction = Transaction::findOrFail($id);
+        return DB::transaction(function () use ($request, $id) {
+            $transaction = Transaction::with('detail_transaction')->findOrFail($id);
 
-        if ($transaction->user_id !== Auth::id() && Auth::user()->role === 'user') {
-            abort(403, 'Anda tidak memiliki akses untuk membatalkan pesanan ini.');
-        }
+            if ($transaction->user_id !== Auth::id()) {
+                abort(403);
+            }
 
-        $detail = $transaction->detail_transaction;
+            $detail = $transaction->detail_transaction;
 
-        if ($detail->status !== 'pending') {
-            return back()->with('error', 'Pesanan tidak dapat dibatalkan karena sudah diproses.');
-        }
+            if ($detail->status !== 'pending') {
+                return back()->with('error', 'Maaf, pesanan sudah diproses dan tidak bisa dibatalkan.');
+            }
 
-        $detail->update([
-            'status' => 'cancelled',
-            'progress_status' => 'cancelled',
-            'cancel_reason' => $request->cancel_reason
-        ]);
+            $detail->update([
+                'status' => 'cancelled',
+                'progress_status' => 'cancelled',
+                'cancel_reason' => $request->cancel_reason
+            ]);
 
-        return redirect()->route('pesanan')
-            ->with('success', 'Pesanan berhasil dibatalkan.');
-    }
+            $user = Auth::user();
+            $completedCount = Transaction::where('user_id', $user->id)
+                ->whereHas('detail_transaction', function ($q) {
+                    $q->where('status', 'completed');
+                })->count();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+            if ($completedCount >= 20) {
+                User::where('id', $user->id)->update(['status_member' => 'gold']);
+            } elseif ($completedCount >= 10) {
+                User::where('id', $user->id)->update(['status_member' => 'silver']);
+            } else {
+                User::where('id', $user->id)->update(['status_member' => 'bronze']);
+            }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            return redirect()->route('pesanan')
+                ->with('success', 'Pesanan dibatalkan. Progres member Anda telah diperbarui.');
+        });
     }
 }

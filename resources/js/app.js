@@ -106,48 +106,58 @@ function initCancelModal() {
 /* ===============================
    TRANSACTION FORM
 ================================= */
+/* Tambahkan/Update Bagian Ini di app.js Anda */
 function initTransactionForm() {
     const serviceRadios = document.querySelectorAll('input[name="service"]');
     const outletRadios = document.querySelectorAll('input[name="outlet_id"]');
-
-    const displayPrice = document.getElementById("display-price");
-    const total = document.getElementById("total-price");
-    const inputTotal = document.getElementById("input-total-price");
-    const displayOutlet = document.getElementById("selected-outlet");
-    const displayDiscount = document.getElementById("discount");
-    const inputDiscount = document.getElementById("input-discount");
-    const inputStatusMember = document.getElementById("input-status-member");
+    const displayPrice = document.getElementById('display-price');
+    const displayDiscount = document.getElementById('discount');
+    const totalPriceElement = document.getElementById('total-price');
+    const inputTotal = document.getElementById('input-total-price');
+    const inputDiscount = document.getElementById('input-discount');
+    const displayOutlet = document.getElementById('selected-outlet');
+    const memberStatus = document.getElementById('input-status-member')?.value || 'none';
 
     if (!serviceRadios.length) return;
 
-    // update harga
-    serviceRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-            const price = Number(radio.dataset.price);
-            const formatted = formatRupiah(price);
+    function updateSummary() {
+        const selectedService = document.querySelector('input[name="service"]:checked');
+        if (!selectedService) return;
 
-            displayPrice.textContent = formatted;
-            total.textContent = formatted;
-            if (inputTotal) inputTotal.value = price;
-        });
+        const basePrice = parseInt(selectedService.dataset.price);
+        let discountPercent = 0;
+
+        if (memberStatus === 'bronze') discountPercent = 0.05;
+        else if (memberStatus === 'silver') discountPercent = 0.10;
+        else if (memberStatus === 'gold') discountPercent = 0.20;
+
+        const discountAmount = basePrice * discountPercent;
+        const finalPrice = basePrice - discountAmount;
+
+        if (displayPrice) displayPrice.textContent = formatRupiah(basePrice);
+        if (displayDiscount) displayDiscount.textContent = `- ${formatRupiah(discountAmount)}`;
+        if (totalPriceElement) totalPriceElement.textContent = formatRupiah(finalPrice);
+
+        if (inputTotal) inputTotal.value = finalPrice;
+        if (inputDiscount) inputDiscount.value = discountAmount;
+    }
+
+    serviceRadios.forEach(radio => {
+        radio.addEventListener('change', updateSummary);
     });
 
-    // update outlet
-    outletRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-            const name = radio
-                .closest("label")
-                ?.querySelector("span")?.innerText;
+    outletRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const name = radio.closest('label')?.querySelector('span')?.innerText;
             if (displayOutlet) {
                 displayOutlet.textContent = name;
-                displayOutlet.classList.add("text-white");
+                displayOutlet.classList.replace('text-gray-400', 'text-blue-400');
             }
         });
     });
 
-    // auto trigger kalau sudah ada yang dipilih (dari URL)
     const checked = document.querySelector('input[name="service"]:checked');
-    if (checked) checked.dispatchEvent(new Event("change"));
+    if (checked) updateSummary();
 }
 
 /* ===============================
