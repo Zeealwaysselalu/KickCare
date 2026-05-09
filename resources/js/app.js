@@ -7,7 +7,7 @@ Alpine.start();
 /* ===============================
    UTILITIES
 ================================= */
-function formatRupiah(number) {
+const formatRupiah = (number) => {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
@@ -15,142 +15,137 @@ function formatRupiah(number) {
     })
         .format(number)
         .replace("Rp", "Rp ");
-}
+};
 
 /* ===============================
-   MODAL DETAIL
+   CASHIER DASHBOARD LOGIC
+   (Hanya berjalan di halaman Kasir)
 ================================= */
-function openDetail(id) {
-    const modal = document.getElementById("modalDetail");
-    const content = document.getElementById("modalContent");
+function initCashierLogic() {
+    const btnCheckUser = document.getElementById("btn-check-user");
+    
+    // GUARD: Jika elemen ini tidak ada, berarti bukan halaman kasir
+    if (!btnCheckUser) return;
 
-    if (!modal || !content) return;
+    const emailInput = document.getElementById("customer_email");
+    const nameInput = document.getElementById("display_name");
+    const statusDisplay = document.getElementById("display_member_status");
+    const discountRateInput = document.getElementById("current_discount_rate");
+    const serviceInputs = document.querySelectorAll('input[name="service"]');
 
-    modal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-
-    fetch(`/transaksi/${id}`, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            Accept: "text/html",
-        },
-    })
-        .then((res) => {
-            if (!res.ok) throw new Error(res.status);
-            return res.text();
-        })
-        .then((html) => {
-            content.innerHTML = html;
-        })
-        .catch(() => {
-            content.innerHTML = `
-            <div class="p-12 text-center">
-                <p class="text-red-500 font-bold">Gagal mengambil data</p>
-                <button class="btn-close mt-4 text-blue-600 text-xs">Tutup</button>
-            </div>
-        `;
-        });
-}
-
-function closeDetailModal() {
-    const modal = document.getElementById("modalDetail");
-    if (!modal) return;
-
-    modal.classList.add("hidden");
-    document.body.style.overflow = "auto";
-}
-
-/* ===============================
-   MODAL CANCEL
-================================= */
-function initCancelModal() {
-    const modal = document.getElementById("cancelModal");
-    const form = document.getElementById("cancelForm");
-    const closeBtn = document.getElementById("closeModalBtn");
-    const buttons = document.querySelectorAll(".btn-cancel");
-
-    if (!modal || !form) return;
-
-    // 1. Fungsi Buka Modal
-    const openModal = (e) => {
-        const btn = e.currentTarget;
-
-        // Ambil URL aman dari atribut data-action yang digenerate Blade
-        const actionUrl = btn.dataset.action;
-
-        form.action = actionUrl;
-        modal.classList.remove("hidden");
-        document.body.style.overflow = "hidden"; // Kunci scroll layar belakang
-    };
-
-    // 2. Fungsi Tutup Modal
-    const closeModal = () => {
-        modal.classList.add("hidden");
-        document.body.style.overflow = "auto"; // Kembalikan scroll
-        form.reset();
-        form.action = ""; // Bersihkan action demi keamanan
-    };
-
-    // 3. Pemasangan Event Listener
-    buttons.forEach((btn) => {
-        btn.addEventListener("click", openModal);
-    });
-
-    closeBtn?.addEventListener("click", closeModal);
-
-    window.addEventListener("click", (e) => {
-        if (e.target === modal) closeModal();
-    });
-}
-
-/* ===============================
-   TRANSACTION FORM
-================================= */
-function initTransactionForm() {
-    const serviceRadios = document.querySelectorAll('input[name="service"]');
-    const outletRadios = document.querySelectorAll('input[name="outlet_id"]');
-
+    // UI Summary Elements
     const displayPrice = document.getElementById("display-price");
-    const total = document.getElementById("total-price");
-    const inputTotal = document.getElementById("input-total-price");
-    const displayOutlet = document.getElementById("selected-outlet");
+    const displayDiscount = document.getElementById("display-discount");
+    const totalPriceDisplay = document.getElementById("total-price");
+    const inputTotalHidden = document.getElementById("input-total-price");
 
-    if (!serviceRadios.length) return;
+    const memberRates = { gold: 0.20, silver: 0.10, bronze: 0.05, none: 0 };
 
-    // update harga
-    serviceRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-            const price = Number(radio.dataset.price);
-            const formatted = formatRupiah(price);
+    // 1. Fungsi Kalkulasi Billing Kasir
+    const calculateCashierBilling = () => {
+        const selected = document.querySelector('input[name="service"]:checked');
+        const rate = parseFloat(discountRateInput?.value || 0);
+        
+        if (selected) {
+            const price = parseInt(selected.dataset.price);
+            const discountAmount = price * rate;
+            const finalTotal = price - discountAmount;
 
-            displayPrice.textContent = formatted;
-            total.textContent = formatted;
-            if (inputTotal) inputTotal.value = price;
-        });
+            if (displayPrice) displayPrice.innerText = formatRupiah(price);
+            if (displayDiscount) displayDiscount.innerText = '- ' + formatRupiah(discountAmount);
+            if (totalPriceDisplay) totalPriceDisplay.innerText = formatRupiah(finalTotal);
+            if (inputTotalHidden) inputTotalHidden.value = finalTotal;
+        }
+    };
+
+    // 2. Event Listener Service
+    serviceInputs.forEach(input => {
+        input.addEventListener('change', calculateCashierBilling);
     });
 
-    // update outlet
-    outletRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-            const name = radio
-                .closest("label")
-                ?.querySelector("span")?.innerText;
-            if (displayOutlet) {
-                displayOutlet.textContent = name;
-                displayOutlet.classList.add("text-white");
+    // 3. Event Listener Cek User via Email
+    btnCheckUser.addEventListener('click', async () => {
+        const email = emailInput.value;
+        if (!email) return alert('Masukkan email pelanggan!');
+
+        btnCheckUser.innerHTML = '<span class="animate-pulse">...</span>';
+        
+        try {
+            const response = await fetch(`/api/find-user?email=${encodeURIComponent(email)}`);
+            const data = await response.json();
+
+            if (data.success) {
+                nameInput.value = data.name;
+                statusDisplay.value = data.status_member.toUpperCase();
+                statusDisplay.classList.remove('text-gray-400');
+                statusDisplay.classList.add('text-blue-600');
+                discountRateInput.value = memberRates[data.status_member.toLowerCase()] || 0;
+            } else {
+                alert(data.message || 'User tidak ditemukan');
+                resetMemberFields();
             }
-        });
+        } catch (e) {
+            console.error("Fetch Error:", e);
+            alert('Gagal mengambil data dari server.');
+        } finally {
+            btnCheckUser.innerHTML = 'Cek User';
+            calculateCashierBilling();
+        }
     });
 
-    // auto trigger kalau sudah ada yang dipilih (dari URL)
-    const checked = document.querySelector('input[name="service"]:checked');
-    if (checked) checked.dispatchEvent(new Event("change"));
+    function resetMemberFields() {
+        nameInput.value = "";
+        statusDisplay.value = "BUKAN MEMBER";
+        statusDisplay.classList.replace('text-blue-600', 'text-gray-400');
+        discountRateInput.value = 0;
+    }
 }
 
+/**
+ * Toggle Mode: Member vs Guest
+ * Dibuat Global (window) agar bisa diakses dari atribut onchange di Blade
+ */
+window.toggleAccountMode = function(hasAccount) {
+    const emailWrapper = document.getElementById('email_search_wrapper');
+    const nameInput = document.getElementById('display_name');
+    const statusDisplay = document.getElementById('display_member_status');
+    const discountRateInput = document.getElementById('current_discount_rate');
+    const emailInput = document.getElementById('customer_email');
+
+    if (!nameInput) return;
+
+    if (hasAccount) {
+        emailWrapper.style.display = 'block';
+        nameInput.readOnly = true;
+        nameInput.classList.replace('bg-gray-50', 'bg-gray-100');
+        nameInput.placeholder = "Cek email dulu";
+        nameInput.value = "";
+        statusDisplay.value = "MENUNGGU PENGECEKAN";
+    } else {
+        emailWrapper.style.display = 'none';
+        nameInput.readOnly = false;
+        nameInput.classList.replace('bg-gray-100', 'bg-gray-50');
+        nameInput.placeholder = "Ketik nama pelanggan";
+        nameInput.value = "";
+        emailInput.value = "";
+        
+        statusDisplay.value = "BUKAN MEMBER";
+        statusDisplay.classList.replace('text-blue-600', 'text-gray-400');
+        discountRateInput.value = 0;
+    }
+
+    // Trigger hitung ulang setelah ganti mode
+    const checkedService = document.querySelector('input[name="service"]:checked');
+    if (checkedService) {
+        checkedService.dispatchEvent(new Event('change'));
+    }
+};
+
 /* ===============================
-   GLOBAL EVENTS
+   GENERAL TRANSAKSI (USER BIASA)
+   & MODAL LOGIC
 ================================= */
-function initGlobalEvents() {
+function initGeneralLogic() {
     document.addEventListener("click", (e) => {
         const detailBtn = e.target.closest(".btn-detail");
         if (detailBtn) openDetail(detailBtn.dataset.id);
@@ -159,27 +154,53 @@ function initGlobalEvents() {
         if (closeBtn) closeDetailModal();
     });
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            // Tutup Detail Modal
-            closeDetailModal();
+    const cancelModal = document.getElementById("cancelModal");
+    const cancelButtons = document.querySelectorAll(".btn-cancel");
+    if (cancelModal) {
+        cancelButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const form = document.getElementById("cancelForm");
+                form.action = e.currentTarget.dataset.action;
+                cancelModal.classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+            });
+        });
+    }
+}
 
-            // Tutup Cancel Modal (jika sedang terbuka)
-            const cancelModal = document.getElementById("cancelModal");
-            if (cancelModal && !cancelModal.classList.contains("hidden")) {
-                cancelModal.classList.add("hidden");
-                document.getElementById("cancelForm")?.reset();
-                document.body.style.overflow = "auto";
-            }
-        }
-    });
+function openDetail(id) {
+    const modal = document.getElementById("modalDetail");
+    const content = document.getElementById("modalContent");
+    if (!modal) return;
+
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    fetch(`/transaksi/${id}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest", Accept: "text/html" },
+    })
+    .then(res => res.text())
+    .then(html => { content.innerHTML = html; })
+    .catch(() => { content.innerHTML = '<p class="p-4 text-red-500">Gagal memuat data.</p>'; });
+}
+
+function closeDetailModal() {
+    const modal = document.getElementById("modalDetail");
+    if (modal) {
+        modal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+    }
 }
 
 /* ===============================
-   INIT
+   INITIALIZATION
 ================================= */
 document.addEventListener("DOMContentLoaded", () => {
-    initTransactionForm();
-    initCancelModal();
-    initGlobalEvents();
+    initCashierLogic();
+    initGeneralLogic();   
+    
+    const accountRadio = document.querySelector('input[name="has_account"]:checked');
+    if (accountRadio) {
+        toggleAccountMode(accountRadio.value === 'yes');
+    }
 });

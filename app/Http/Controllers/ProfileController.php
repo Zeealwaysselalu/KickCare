@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, Redirect};
 use Illuminate\View\View;
-
-use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -59,5 +59,27 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function findUser(Request $request)
+    {
+        if (!$request->email) {
+            return response()->json(['success' => false, 'message' => 'Email wajib diisi']);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'name' => $user->name,
+                'status_member' => $user->status_member ?? 'none', // gold, silver, bronze, atau none
+            ]);
+        }
+
+        return response()->json([
+            'success' => false, 
+            'message' => 'User tidak ditemukan'
+        ], 404);
     }
 }

@@ -59,12 +59,14 @@ Route::get('/dashboard', function () {
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/api/find-user', [ProfileController::class, 'findUser'])->name('api.find-user');
 Route::get('/transaksi/{id}', [App\Http\Controllers\TransactionController::class, 'show'])->middleware(['auth', 'verified'])->name('transaksi.show');
 Route::patch('/transaction/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
 
 Route::middleware('auth')->group(function () {
     Route::get('/transaction', [TransactionController::class, 'create'])
         ->name('transactions.create');
+    Route::post('/cashier/transactions', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
     Route::post('/transaction/store', [TransactionController::class, 'store'])->name('transactions.store');
 });
 

@@ -4,38 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use App\Models\Outlet;
 
 class OutletController extends Controller
 {
-
     public function index()
-    {
-        $outlet = Outlet::where("user_id", Auth::id())->first();
+{
+    $outlet = Outlet::with(['transactions.detail_transaction', 'transactions.transaction_item'])
+        ->where("user_id", Auth::id())
+        ->first();
 
-        if (!$outlet) {
-            dd("Outlet tidak ditemukan untuk user ini");
-        }
-
-        $allTransaction = $outlet->transactions;
-
-        return view('profile.role.cashier.dashboard', [
-            "latestTransactions" => $allTransaction,
-            "totalOrders" => $allTransaction->count(),
-            "processingOrders" => $allTransaction->where("status", "pending")->count(),
-            "totalRevenue" => $allTransaction->sum("total_price")
-        ]);
+    if (!$outlet) {
+        return redirect()->route('login')->with('error', 'Outlet tidak ditemukan.');
     }
 
-    public function create() {}
-    public function store(Request $request) {}
+    $thisMonthTransactions = $outlet->transactions()
+        ->whereMonth('created_at', now()->month)
+        ->whereYear('created_at', now()->year)
+        ->get();
 
-    public function show($id) {}
-
-    public function edit($id) {}
-
-    public function update(Request $request, $id) {}
-
-    public function destroy($id) {}
+    return view('profile.role.cashier.dashboard', [
+        "latestTransactions" => $outlet->transactions()->latest()->paginate(5),
+        "totalOrdersMonth"   => $thisMonthTransactions->count(),
+        "processingOrders"   => $thisMonthTransactions->where('detail_transaction.status', 'pending')->count(),
+        "totalRevenueMonth"  => $thisMonthTransactions->sum("total_price")
+    ]);
+}
 }

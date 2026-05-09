@@ -44,4 +44,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function outlet()
+    {
+        return $this->hasOne(Outlet::class);
+    }
 }

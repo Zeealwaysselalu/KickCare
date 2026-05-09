@@ -347,3 +347,54 @@ nav {
   .layanan-grid, .galeri-grid { grid-template-columns: 1fr; }
   .about-inner { flex-direction: column-reverse; align-items: center; }
 }
+
+.white-pagination {
+    margin-top: 0.5rem;
+}
+
+.white-pagination nav svg {
+    display: inline;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.white-pagination a, 
+.white-pagination span[aria-disabled="true"] span, 
+.white-pagination span[current="page"] span {
+    background-color: #ffffff !important; /* Latar belakang putih */
+    color: #374151 !important; /* Teks abu gelap (gray-700) */
+    border: 1px solid #e5e7eb !important; /* Border abu terang (gray-200) */
+    padding: 0.5rem 1rem !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.white-pagination span[aria-current="page"] span {
+    background-color: #2563eb !important; /* Biru (blue-600) */
+    color: #ffffff !important; /* Teks putih */
+    border-color: #2563eb !important;
+    font-weight: bold;
+}
+
+.white-pagination a:hover {
+    background-color: #f9fafb !important; /* Abu sangat muda (gray-50) */
+    color: #1d4ed8 !important; /* Biru lebih gelap */
+    border-color: #d1d5db !important;
+}
+
+@media (max-width: 640px) {
+    .white-pagination nav div:first-child {
+        display: none !important;
+    }
+    .white-pagination nav div:last-child {
+        display: flex !important;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.white-pagination nav svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    vertical-align: middle;
+}
