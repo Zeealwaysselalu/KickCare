@@ -45,7 +45,7 @@ Route::get('/dashboard', function () {
         return view('profile.role.admin.dashboard');
     }
     if ($role == 'cashier') {
-        return app(OutletController::class)->index();
+        return app(OutletController::class)->index(request());
         }
     if ($role === 'user') {
         $latestTransactions = Transaction::with(['transaction_item', 'detail_transaction'])

@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $cashier2 = User::create([
-            'username' => 'CashierSepong',
+            'username' => 'CashierSerpong',
             'email' => 'kasirserpong@kickcare.com',
             'password' => Hash::make('password'),
             'role' => 'cashier',

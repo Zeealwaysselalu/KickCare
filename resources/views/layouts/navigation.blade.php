@@ -38,11 +38,6 @@
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('transactions.create') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Buat Transaksi</span>
             </a>
-
-            <a href="#"
-                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('cashier.history*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-                <span>Riwayat Transaksi</span>
-            </a>
         @elseif(Auth::user()->role == 'user')
             <a href="{{ route('dashboard') }}"
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
