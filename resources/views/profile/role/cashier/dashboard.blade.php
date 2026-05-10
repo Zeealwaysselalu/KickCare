@@ -1,20 +1,26 @@
 <x-app-layout>
     <div class="p-6 lg:p-8 max-w-7xl mx-auto">
-        <header class="flex justify-between items-center mb-8">
+        {{-- HEADER DASHBOARD --}}
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-                <h1 class="font-montserrat font-bold text-[32px] text-gray-800 leading-tight">
-                    Halo, {{ Auth::user()->username }}
+                <h1 class="font-montserrat font-bold text-[28px] text-gray-800 leading-tight">
+                    Dashboard Kasir
                 </h1>
-                <p class="font-roboto text-[#6B7280] text-sm mt-1">Pantau performa dan pesanan KickCare hari ini.</p>
+                <p class="font-roboto text-gray-500 text-sm mt-1">Kelola pesanan masuk dan pantau progres cuci hari ini.
+                </p>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('transactions.create') }}"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-montserrat font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-gray-100">
+                <div
+                    class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Pesanan Baru
-                </a>
+                </div>
+                <div class="pr-4">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Jam Operasional</p>
+                    <p class="text-xs font-bold text-gray-700">09:00 - 21:00 WIB</p>
+                </div>
             </div>
         </header>
 
@@ -40,6 +46,7 @@
                         </svg>
                     </div>
                 </div>
+                <p class="text-[10px] text-gray-400 mt-4 font-medium italic">*Sorting, Washing, Drying</p>
             </div>
 
             <div class="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 transition hover:shadow-md group">
@@ -57,6 +64,7 @@
                         </svg>
                     </div>
                 </div>
+                <p class="text-[10px] text-gray-400 mt-4 font-medium italic">*Menunggu pelanggan</p>
             </div>
 
             <div class="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 transition hover:shadow-md group">
@@ -109,73 +117,136 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50/50">
-                        <tr>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-gray-50/50">
+                            <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Detail
+                                Sepatu</th>
                             <th
-                                class="px-8 py-4 font-roboto font-bold text-[10px] text-gray-400 uppercase tracking-[2px]">
-                                ID & Tanggal</th>
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                                Status Global</th>
                             <th
-                                class="px-8 py-4 font-roboto font-bold text-[10px] text-gray-400 uppercase tracking-[2px]">
-                                Pelanggan</th>
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                                Progres Produksi</th>
                             <th
-                                class="px-8 py-4 font-roboto font-bold text-[10px] text-gray-400 uppercase tracking-[2px]">
-                                Treatment</th>
-                            <th
-                                class="px-8 py-4 font-roboto font-bold text-[10px] text-gray-400 uppercase tracking-[2px] text-center">
-                                Status</th>
-                            <th
-                                class="px-8 py-4 font-roboto font-bold text-[10px] text-gray-400 uppercase tracking-[2px] text-right">
+                                class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
                                 Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        @forelse ($latestTransactions as $transaction)
+                        @forelse ($allTransactions as $t)
                             @php
-                                $firstItem = $transaction->transaction_item->first();
-                                $status = $transaction->detail_transaction->status ?? 'pending';
-                                $statusClasses = match ($status) {
-                                    'completed' => 'bg-green-50 text-green-600 border-green-100',
+                                $item = $t->transaction_item->first();
+                                $prog = $t->detail_transaction->progress_status;
+                                $status = $t->detail_transaction->status;
+
+                                $colors = [
+                                    'waiting' => 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-500/20',
+                                    'pending' => 'bg-blue-50 text-blue-600 border-blue-100',
+                                    'sorting' => 'bg-purple-50 text-purple-600 border-purple-100',
+                                    'washing' => 'bg-cyan-50 text-cyan-600 border-cyan-100',
+                                    'drying' => 'bg-orange-50 text-orange-600 border-orange-100',
+                                    'ready' => 'bg-green-50 text-green-600 border-green-100',
+                                    'cleared' => 'bg-emerald-600 text-white border-emerald-700',
                                     'cancelled' => 'bg-red-50 text-red-600 border-red-100',
-                                    default => 'bg-blue-50 text-blue-600 border-blue-100',
-                                };
+                                ];
                             @endphp
-                            <tr class="hover:bg-blue-50/20 transition duration-150 group">
-                                <td class="px-8 py-5">
+                            <tr
+                                class="{{ $prog === 'waiting' ? 'bg-amber-50/20' : '' }} hover:bg-gray-50/80 transition-colors">
+                                <td class="px-8 py-6">
                                     <div class="flex flex-col">
-                                        <span
-                                            class="font-mono font-bold text-sm text-gray-800">#{{ $transaction->transaction_code }}</span>
-                                        <span
-                                            class="text-[10px] text-gray-400 font-medium">{{ $transaction->created_at->format('d/m/y H:i') }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex flex-col">
+                                        <div class="flex items-center gap-2">
                                             <span
-                                                class="font-roboto font-bold text-sm text-gray-800">{{ $firstItem->customer_name ?? 'Guest' }}</span>
+                                                class="font-black text-gray-800 italic uppercase leading-none tracking-tight">
+                                                {{ $item->shoes_name ?? 'N/A' }}
+                                            </span>
+                                            @if ($prog === 'waiting')
+                                                <span
+                                                    class="bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded font-black animate-bounce uppercase">New</span>
+                                            @endif
                                         </div>
+                                        <span
+                                            class="text-[10px] font-mono text-gray-400 mt-1 uppercase tracking-tighter">
+                                            #{{ $t->transaction_code }} • <span
+                                                class="text-blue-500 font-bold">{{ $item->service }}</span>
+                                        </span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <div class="flex flex-col">
+                                <td class="px-8 py-6 text-center">
+                                    @if ($status === 'pending')
                                         <span
-                                            class="font-roboto font-bold text-xs text-gray-700 uppercase">{{ $firstItem->service ?? 'Wash' }}</span>
+                                            class="text-[9px] font-black uppercase px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100 tracking-widest">Active</span>
+                                    @elseif($status === 'completed')
                                         <span
-                                            class="text-[10px] text-blue-500 font-medium">{{ $firstItem->shoes_name ?? '-' }}</span>
-                                    </div>
+                                            class="text-[9px] font-black uppercase px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-100 tracking-widest">Done</span>
+                                    @else
+                                        <span
+                                            class="text-[9px] font-black uppercase px-3 py-1 rounded-full bg-red-50 text-red-600 border border-red-100 tracking-widest">Cancelled</span>
+                                    @endif
                                 </td>
-                                <td class="px-8 py-5 text-center">
-                                    <span
-                                        class="inline-flex items-center px-4 py-1 rounded-full font-roboto font-bold text-[9px] uppercase tracking-widest border {{ $statusClasses }}">
-                                        {{ $status === 'pending' ? 'Diproses' : ($status === 'completed' ? 'Selesai' : 'Batal') }}
-                                    </span>
+                                <td class="px-8 py-6 text-center">
+                                    @if (in_array($prog, ['cleared', 'cancelled']))
+                                        <span
+                                            class="inline-flex items-center px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border {{ $colors[$prog] }}">
+                                            {{ $prog }}
+                                        </span>
+                                    @else
+                                        <div class="relative inline-block">
+                                            @php
+                                                // Definisikan urutan status (Index menentukan level)
+                                                $statusOrder = [
+                                                    'waiting',
+                                                    'pending',
+                                                    'sorting',
+                                                    'washing',
+                                                    'drying',
+                                                    'ready',
+                                                    'cleared',
+                                                ];
+                                                $currentIndex = array_search($prog, $statusOrder);
+                                            @endphp
+
+                                            <select
+                                                onchange="confirmStatusUpdate(this, {{ $t->id }}, '{{ $prog }}')"
+                                                class="text-[10px] font-black uppercase tracking-wider rounded-xl py-2 px-4 focus:ring-4 focus:ring-blue-100 transition-all cursor-pointer border shadow-sm {{ $colors[$prog] ?? 'bg-white text-gray-800 border-gray-200' }}">
+
+                                                {{-- Status saat ini (disabled agar tidak bisa dipilih ulang) --}}
+                                                <option value="{{ $prog }}" selected disabled>●
+                                                    {{ strtoupper($prog) }}</option>
+
+                                                <option disabled>──────────</option>
+
+                                                {{-- Hanya tampilkan status yang index-nya lebih tinggi dari status sekarang --}}
+                                                @foreach ($statusOrder as $index => $statusName)
+                                                    @if ($index > $currentIndex)
+                                                        <option value="{{ $statusName }}">
+                                                            @if ($statusName == 'pending')
+                                                                Accept Order
+                                                            @else
+                                                                {{ ucfirst($statusName) }}
+                                                            @endif
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                 </td>
-                                <td class="px-8 py-5 text-right">
+                                <td class="px-8 py-6 text-right">
                                     <div class="flex justify-end gap-2">
-                                        <button data-id="{{ $transaction->id }}"
-                                            class="btn-detail p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                        @if ($prog === 'waiting')
+                                            <form action="{{ route('kasir.approve', $t->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-black px-4 py-2 rounded-lg transition-all shadow-md shadow-amber-100 uppercase tracking-widest">
+                                                    Accept
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <button title="Lihat Detail" data-id="{{ $t->id }}"
+                                            class="btn-detail p-2 bg-white text-gray-400 hover:text-blue-600 rounded-lg transition-colors border border-gray-100 shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -188,27 +259,23 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-8 py-20 text-center text-gray-400 font-roboto text-sm">
-                                    Belum ada data transaksi masuk hari ini.
+                                <td colspan="4" class="py-20 text-center">
+                                    <div class="flex flex-col items-center opacity-20">
+                                        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                        </svg>
+                                        <p class="text-xl font-black italic uppercase tracking-widest">Antrean Kosong
+                                        </p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                <div class="px-8 py-5 bg-gray-50/50 border-t border-gray-100">
-                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <span class="font-roboto text-[10px] text-gray-400 uppercase font-bold tracking-widest ">
-                            Menampilkan {{ $latestTransactions->firstItem() }} - {{ $latestTransactions->lastItem() }}
-                            dari {{ $latestTransactions->total() }} transaksi
-                        </span>
-                        <div class="white-pagination">
-                            {{ $latestTransactions->links() }}
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-
-    <x-modal-detail />
+    <x-modal-detail/>
 </x-app-layout>

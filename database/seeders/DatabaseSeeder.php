@@ -99,7 +99,7 @@ class DatabaseSeeder extends Seeder
                 DetailTransaction::create([
                     'transaction_id' => $transaction->id,
                     'status' => 'completed',
-                    'progress_status' => 'ready',
+                    'progress_status' => 'cleared',
                     'cancel_reason' => null,
                 ]);
 

@@ -26,7 +26,8 @@ Route::get('/dashboard1', function () {
 });
 
 Route::get('/benefits', function () {
-    return view('profile.role.user.benefits');
+    $countTransaction = Transaction::where('user_id', Auth::id())->count();
+    return view('profile.role.user.benefits', compact('countTransaction'));
 })->middleware(['auth', 'verified'])->name('benefits');
 
 Route::get('/about', function () {
@@ -48,20 +49,22 @@ Route::get('/dashboard', function () {
         return app(OutletController::class)->index(request());
         }
     if ($role === 'user') {
+        $dataprofil = Auth::user();
         $latestTransactions = Transaction::with(['transaction_item', 'detail_transaction'])
             ->where('user_id', Auth::id())
             ->latest()
             ->take(5)
             ->get();
 
-        return view('profile.role.user.dashboard')
-            ->with('latestTransactions', $latestTransactions);
+        return view('profile.role.user.dashboard', compact('dataprofil', 'latestTransactions'));
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/api/find-user', [ProfileController::class, 'findUser'])->name('api.find-user');
 Route::get('/transaksi/{id}', [App\Http\Controllers\TransactionController::class, 'show'])->middleware(['auth', 'verified'])->name('transaksi.show');
 Route::patch('/transaction/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
+Route::post('/kasir/approve/{id}', [TransactionController::class, 'approve'])->name('kasir.approve');
+Route::post('/transactions/{id}/update-progress', [TransactionController::class, 'updateProgress'])->name('transactions.update-progress');
 
 Route::middleware('auth')->group(function () {
     Route::get('/transaction', [TransactionController::class, 'create'])

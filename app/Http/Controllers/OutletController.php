@@ -43,7 +43,7 @@ class OutletController extends Controller
             ->withQueryString(); // Agar saat pindah halaman search tidak hilang
 
         return view('profile.role.cashier.dashboard', [
-            "latestTransactions" => $latestTransactions,
+            "allTransactions" => $latestTransactions,
             "totalOrdersMonth"   => $thisMonthTransactions->count(),
             "processingOrders"   => $thisMonthTransactions->where('detail_transaction.status', 'pending')->count(),
             "totalRevenueMonth"  => $thisMonthTransactions->sum("total_price")

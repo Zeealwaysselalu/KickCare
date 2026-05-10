@@ -17,14 +17,14 @@ return new class extends Migration
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->enum('progress_status', [
+                'waiting',
                 'pending',
-                'pickup',
-                'received',
+                'sorting',
                 'washing',
                 'drying',
                 'ready',
-                'delivered',
-                'cancelled'     
+                'cleared',
+                'cancelled'
             ])->default('pending');
             $table->string('cancel_reason')->nullable();
             $table->timestamps();
