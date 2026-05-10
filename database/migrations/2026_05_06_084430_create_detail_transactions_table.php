@@ -18,13 +18,11 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->enum('progress_status', [
                 'pending',
-                'pickup',
-                'received',
+                'sorting',
                 'washing',
                 'drying',
                 'ready',
-                'delivered',
-                'cancelled'     
+                'cancelled'
             ])->default('pending');
             $table->string('cancel_reason')->nullable();
             $table->timestamps();

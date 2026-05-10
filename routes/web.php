@@ -49,14 +49,14 @@ Route::get('/dashboard', function () {
         return app(OutletController::class)->index();
         }
     if ($role === 'user') {
+        $dataprofil = Auth::user();
         $latestTransactions = Transaction::with(['transaction_item', 'detail_transaction'])
             ->where('user_id', Auth::id())
             ->latest()
             ->take(5)
             ->get();
 
-        return view('profile.role.user.dashboard')
-            ->with('latestTransactions', $latestTransactions);
+        return view('profile.role.user.dashboard', compact('dataprofil', 'latestTransactions'));
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
