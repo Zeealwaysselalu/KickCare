@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->hasOne(Outlet::class);
     }
 
-    public function complainmassage()
+    public function complainmessage()
     {
         return $this->hasOne(Outlet::class);
     }

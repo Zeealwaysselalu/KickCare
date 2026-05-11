@@ -13,7 +13,7 @@
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Dashboard Admin</span>
             </a>
-            <a href="#"
+            <a href="{{ route('admin.outlets.index') }}"
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/outlets*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Kelola Outlet</span>
             </a>
@@ -24,10 +24,6 @@
             <a href="{{ route('service') }}"
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('service*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Laporan Pengaduan</span>
-            </a>
-            <a href="#"
-                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/reports*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
-                <span>Laporan Pendapatan</span>
             </a>
         @elseif(Auth::user()->role == 'cashier')
             <a href="{{ route('dashboard') }}"

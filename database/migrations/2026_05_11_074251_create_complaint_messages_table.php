@@ -16,14 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('subject', [
-                'status pesanan',
-                'keluhan hasil cuci',
-                'masalah pembayaran',
-                'partnership',
-                'lainnya',
+                'Status Pesanan',
+                'Keluhan Hasil Cuci',
+                'Masalah Pembayaran',
+                'Partnership',
+                'Lainnya',
             ]);
             $table->string('transaction_code')->nullable();
-            $table->string('massage');
+            $table->string('message');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('complaint_massages');
+        Schema::dropIfExists('complaint_messages');
     }
 };

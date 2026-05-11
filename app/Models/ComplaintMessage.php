@@ -10,7 +10,7 @@ class ComplaintMessage extends Model
         'user_id',
         'subject',
         'transaction_code',
-        'massage',
+        'message',
     ];
 
     public function user()

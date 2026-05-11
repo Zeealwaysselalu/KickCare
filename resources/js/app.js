@@ -589,6 +589,41 @@ window.toggleAccountMode = function (hasAccount) {
 };
 
 /* ===============================
+   REPORT LOGIC (Complaint)
+================================= */
+function initComplaintLogic() {
+    const modal = document.getElementById('complaintModal');
+    if (!modal) return;
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.view-complaint-btn');
+        if (btn) {
+            const name = btn.getAttribute('data-name');
+            const date = btn.getAttribute('data-date');
+            const subject = btn.getAttribute('data-subject');
+            const message = btn.getAttribute('data-message');
+
+            document.getElementById('modal-name').innerText = name;
+            document.getElementById('modal-date').innerText = date;
+            document.getElementById('modal-subject').innerText = subject;
+            document.getElementById('modal-message').innerText = message;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+
+    window.closeComplaintModal = function() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    };
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeComplaintModal();
+    });
+}
+
+/* ===============================
    GENERAL LOGIC
 ================================= */
 function initGeneralLogic() {
@@ -636,6 +671,7 @@ document.addEventListener(
         initTransactionForm();
         initCancelModal();
         initGeneralLogic();
+        initComplaintLogic();
 
         const accountRadio = document.querySelector(
             'input[name="has_account"]:checked'

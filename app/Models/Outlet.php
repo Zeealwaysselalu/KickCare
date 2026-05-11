@@ -5,7 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Outlet extends Model
-{
+{   
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'address',
+    ];
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

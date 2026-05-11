@@ -51,6 +51,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/about', fn() => view('profile.role.user.about'))->name('about');
     Route::get('/api/find-user', [ProfileController::class, 'findUser'])->name('api.find-user');
 
+    Route::get('/admin/outlets', [OutletController::class, 'listAllOutlets'])->name('admin.outlets.index');
+    Route::get('/admin/outlets/create', [OutletController::class, 'create'])->name('admin.outlets.create');
+    Route::post('/admin/outlets/store', [OutletController::class, 'store'])->name('admin.outlets.store');
+    Route::delete('/admin/outlets/{id}/destroy', [OutletController::class, 'destroy'])->name('admin.outlets.destroy');
+    Route::get('/admin/outlets/{id}/edit', [OutletController::class, 'edit'])->name('admin.outlets.edit');
+    Route::put('/admin/outlets/{id}', [OutletController::class, 'update'])->name('admin.outlets.update');
+
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
         Route::patch('/profile', 'update')->name('profile.update');

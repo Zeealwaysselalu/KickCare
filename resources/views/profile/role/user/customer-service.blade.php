@@ -50,7 +50,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Pesan
                                 Anda</label>
-                            <textarea rows="4" placeholder="Jelaskan kendala Anda secara detail..." name="massage"
+                            <textarea rows="4" placeholder="Jelaskan kendala Anda secara detail..." name="message"
                                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition"></textarea>
                         </div>
                         <button type="submit"

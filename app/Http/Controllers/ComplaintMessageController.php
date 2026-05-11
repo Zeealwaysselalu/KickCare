@@ -24,14 +24,14 @@ class ComplaintMessageController extends Controller
         $request->validate([
             'transaction_code' => 'max:100',
             'subject' => 'required|max:255',
-            'massage' => 'required|max:255',
+            'message' => 'required|max:255',
         ]);
         $userId = Auth::id();
         ComplaintMessage::create([
             'user_id' => $userId,
-            'subject' => strtolower($request->subject),
+            'subject' => ($request->subject),
             'transaction_code' => $request->transaction_code,
-            'massage' => $request->massage,
+            'message' => $request->message,
         ]);
 
         return redirect()->route('dashboard')
