@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\{Auth, Route};
 
-use App\Http\Controllers\{OutletController, ProfileController, TransactionController};
+use App\Http\Controllers\{ComplaintMassageController, OutletController, ProfileController, TransactionController};
 use App\Models\{Outlet, Transaction};
 
 Route::get('/', function () {
@@ -34,11 +34,10 @@ Route::get('/about', function () {
     return view('profile.role.user.about');
 })->middleware(['auth', 'verified'])->name('about');
 
-Route::get('/service', function () {
-    return view('profile.role.user.customer-service');
-})->middleware(['auth', 'verified'])->name('service');
+Route::get('/service', [ComplaintMassageController::class, 'index'])->middleware(['auth', 'verified'])->name('service');
+Route::post('/service/create', [ComplaintMassageController::class, 'store'])->middleware(['auth', 'verified'])->name('service.store');
 
-Route::get('/transaksi', [App\Http\Controllers\TransactionController::class, 'index'])->middleware(['auth', 'verified'])->name('pesanan');
+Route::get('/transaksi', [TransactionController::class, 'index'])->middleware(['auth', 'verified'])->name('pesanan');
 
 Route::get('/dashboard', function () {
     $role = Auth::user()->role;

@@ -24,14 +24,14 @@
                         </span>
                         Kirim Pesan Bantuan
                     </h3>
-                    <form action="#" method="POST" class="space-y-4">
+                    <form action="{{ route('service.store') }}" method="POST" class="space-y-4">
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label
                                     class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Subjek
                                     Masalah</label>
-                                <select
+                                <select name="subject"
                                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
                                     <option>Status Pesanan</option>
                                     <option>Keluhan Hasil Cuci</option>
@@ -43,14 +43,14 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">ID
                                     Transaksi (Opsional)</label>
-                                <input type="text" placeholder="#KC-0000"
+                                <input type="text" placeholder="#KC-0000" name="transaction_code"
                                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Pesan
                                 Anda</label>
-                            <textarea rows="4" placeholder="Jelaskan kendala Anda secara detail..."
+                            <textarea rows="4" placeholder="Jelaskan kendala Anda secara detail..." name="massage"
                                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition"></textarea>
                         </div>
                         <button type="submit"

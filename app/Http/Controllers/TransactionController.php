@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Outlet, Transaction};
-use App\Models\TransactionItem;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\DetailTransaction;
+use Illuminate\Support\Facades\{Auth, DB};
+
+use App\Models\{DetailTransaction, Outlet, Transaction, TransactionItem, User};
 
 class TransactionController extends Controller
 {
@@ -92,12 +89,11 @@ class TransactionController extends Controller
 
             $transactionCode = 'KC-' . $today . '-' . $nextNumber;
 
-            // 3. SIMPAN DATA
             $transaction = Transaction::create([
                 'transaction_code' => $transactionCode,
                 'outlet_id' => $request->outlet_id,
                 'user_id' => $user->id,
-                'total_price' => $finalPrice, // Pakai hasil hitungan server
+                'total_price' => $finalPrice,
             ]);
 
             TransactionItem::create([
@@ -148,7 +144,7 @@ class TransactionController extends Controller
         $userId = null;
         $discountRate = 0;
         if ($request->has_account == 'yes' && $request->email) {
-            $user = \App\Models\User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->first();
             if ($user) {
                 $userId = $user->id;
                 $rates = ['gold' => 0.20, 'silver' => 0.10, 'bronze' => 0.05];
@@ -300,7 +296,6 @@ class TransactionController extends Controller
 
     public function approve($id)
     {
-        // 1. Cari transaksi berdasarkan ID
         $transaction = Transaction::findOrFail($id);
 
         // 2. Ambil detail transaksi (asumsi relasi bernama detail_transaction)
@@ -313,8 +308,8 @@ class TransactionController extends Controller
 
         // 4. Update status
         $detail->update([
-            'status' => 'pending',          // Status global menjadi aktif
-            'progress_status' => 'pending'  // Progres masuk ke tahap pertama (Pesanan Diterima)
+            'status' => 'pending',
+            'progress_status' => 'pending'
         ]);
 
         // 5. Kembalikan dengan pesan sukses

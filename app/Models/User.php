@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Outlet::class);
     }
+
+    public function complainmassage()
+    {
+        return $this->hasOne(Outlet::class);
+    }
 }
