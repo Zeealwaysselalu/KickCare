@@ -17,7 +17,7 @@
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/outlets*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Kelola Outlet</span>
             </a>
-            <a href="#"
+            <a href="{{ route('admin.users.index') }}"
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/users*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Data Pengguna</span>
             </a>

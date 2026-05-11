@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\{Auth, Route};
-
 use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, ProfileController, TransactionController};
+use App\Http\Controllers\UserController;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\{Auth, Route};
 
 // Public Routes
 Route::get('/', fn() => view('welcome1'));
@@ -57,6 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/admin/outlets/{id}/destroy', [OutletController::class, 'destroy'])->name('admin.outlets.destroy');
     Route::get('/admin/outlets/{id}/edit', [OutletController::class, 'edit'])->name('admin.outlets.edit');
     Route::put('/admin/outlets/{id}', [OutletController::class, 'update'])->name('admin.outlets.update');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::delete('/admin/users/{id}/destroy', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
