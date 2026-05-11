@@ -22,7 +22,7 @@ return new class extends Migration
                 'partnership',
                 'lainnya',
             ]);
-            $table->string('transaction_code');
+            $table->string('transaction_code')->nullable();
             $table->string('massage');
             $table->timestamps();
         });

@@ -11,7 +11,12 @@ class ComplaintMessageController extends Controller
 {
     public function index()
     {
-        return view('profile.role.user.customer-service');
+        if (Auth::user()->role === 'administrator') {
+            $complaints = ComplaintMessage::with('user')->latest()->paginate(10);
+            return view('profile.role.admin.complaints', compact('complaints'));
+        } elseif (Auth::user()->role === 'user') {
+            return view('profile.role.user.customer-service');
+        }
     }
 
     public function store(Request $request)

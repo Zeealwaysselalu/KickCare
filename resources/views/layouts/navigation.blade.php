@@ -13,19 +13,20 @@
                 class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Dashboard Admin</span>
             </a>
-
             <a href="#"
-                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.outlets*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/outlets*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Kelola Outlet</span>
             </a>
-
             <a href="#"
-                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.users*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/users*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Data Pengguna</span>
             </a>
-
+            <a href="{{ route('service') }}"
+                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('service*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                <span>Laporan Pengaduan</span>
+            </a>
             <a href="#"
-                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.reports*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
+                class="flex items-center w-full px-4 py-3 rounded-xl transition-all {{ request()->is('admin/reports*') ? 'text-blue-600 font-medium bg-blue-50' : 'text-gray-500 hover:text-blue-600 hover:bg-gray-50' }}">
                 <span>Laporan Pendapatan</span>
             </a>
         @elseif(Auth::user()->role == 'cashier')
@@ -59,9 +60,7 @@
                 <span>About KickCare</span>
             </a>
         @endif
-
     </nav>
-
     <div class="border-t border-gray-100 pt-4 mt-auto px-6">
         <div class="flex items-center gap-3 px-2 mb-4">
             <div class="relative">
