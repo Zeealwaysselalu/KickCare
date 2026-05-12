@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Log, Mail};
 
+use App\Mail\InvoiceMail;
 use App\Models\{DetailTransaction, Outlet, Transaction, TransactionItem, User};
 
 class TransactionController extends Controller
@@ -26,9 +27,9 @@ class TransactionController extends Controller
     {
         $allOutlet = Outlet::all();
         $selectedService = $request->service;
-        if (Auth::User()->role === "cashier") {
+        if (Auth::user()->role === "cashier") {
             return view('profile.role.cashier.transaction', compact('selectedService', 'allOutlet'));
-        } elseif (Auth::User()->role === "user") {
+        } elseif (Auth::user()->role === "user") {
             return view('profile.role.user.transaction', compact('selectedService', 'allOutlet'));
         }
     }
@@ -43,7 +44,6 @@ class TransactionController extends Controller
                 'status_member' => $user->status_member ?? 'none'
             ]);
         }
-
         return response()->json(['success' => false, 'message' => 'User tidak ditemukan']);
     }
 
@@ -57,7 +57,7 @@ class TransactionController extends Controller
             'shoes_color' => 'nullable|string|max:255',
         ]);
 
-        return DB::transaction(function () use ($request) {
+        $transaction = DB::transaction(function () use ($request) {
             $user = Auth::user();
 
             $prices = [
@@ -69,15 +69,13 @@ class TransactionController extends Controller
             $basePrice = $prices[$request->service];
             $discountPercent = 0;
 
-            // Sesuaikan dengan logic Benefit Page
             if ($user->status_member === 'bronze') $discountPercent = 0.05;
             elseif ($user->status_member === 'silver') $discountPercent = 0.10;
             elseif ($user->status_member === 'gold') $discountPercent = 0.20;
 
-            $discountAmount = $basePrice * $discountPercent;
-            $finalPrice = $basePrice - $discountAmount;
+            $finalPrice = $basePrice - ($basePrice * $discountPercent);
 
-            // 2. GENERATE KODE TRANSAKSI
+            // Generate Kode Transaksi
             $today = now()->format('Ymd');
             $lastTransaction = Transaction::whereDate('created_at', now()->today())
                 ->orderBy('id', 'desc')
@@ -89,45 +87,43 @@ class TransactionController extends Controller
 
             $transactionCode = 'KC-' . $today . '-' . $nextNumber;
 
-            $transaction = Transaction::create([
+            // Simpan Transaksi Utama
+            $newTransaction = Transaction::create([
                 'transaction_code' => $transactionCode,
                 'outlet_id' => $request->outlet_id,
                 'user_id' => $user->id,
                 'total_price' => $finalPrice,
             ]);
 
+            // Simpan Item
             TransactionItem::create([
-                'transaction_id' => $transaction->id,
+                'transaction_id' => $newTransaction->id,
                 'customer_name' => $request->customer_name,
                 'shoes_name' => $request->shoes_name,
                 'shoes_color' => $request->shoes_color,
                 'service' => $request->service,
+                'price' => $finalPrice,
             ]);
 
+            // Simpan Detail Status
             DetailTransaction::create([
-                'transaction_id' => $transaction->id,
+                'transaction_id' => $newTransaction->id,
                 'status' => 'pending',
                 'progress_status' => 'waiting',
             ]);
 
-            // 4. LOGIKA UPGRADE MEMBER (Opsional: Hitung transaksi yang sudah selesai)
-            $completedCount = Transaction::where('user_id', $user->id)
-                ->whereHas('detail_transaction', function ($q) {
-                    $q->where('status', 'completed');
-                })->count();
-
-            if ($completedCount >= 20) {
-                User::where('id', $user->id)->update(['status_member' => 'gold']);
-            } elseif ($completedCount >= 10) {
-                User::where('id', $user->id)->update(['status_member' => 'silver']);
-            }
-
-            return redirect()->route('pesanan')
-                ->with('success', 'Pesanan ' . $transactionCode . ' berhasil dibuat!');
+            return $newTransaction;
         });
+
+        try {
+            Mail::to(Auth::user()->email)->send(new InvoiceMail($transaction));
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
+
+        return redirect()->route('pesanan')->with('success', 'Pesanan #' . $transaction->transaction_code . ' berhasil dibuat!');
     }
 
-    // Method baru khusus Kasir
     public function storeByCashier(Request $request)
     {
         $outlet = Outlet::where('user_id', Auth::id())->first();
@@ -138,48 +134,40 @@ class TransactionController extends Controller
             'service'       => 'required',
         ]);
 
-        $prices = ['wash' => 65000, 'unyellowing' => 80000, 'repaint' => 150000];
-        $basePrice = $prices[$request->service] ?? 0;
+        $data = DB::transaction(function () use ($request, $outlet) {
+            $prices = ['wash' => 65000, 'unyellowing' => 80000, 'repaint' => 150000];
+            $basePrice = $prices[$request->service] ?? 0;
 
-        $userId = null;
-        $discountRate = 0;
-        if ($request->has_account == 'yes' && $request->email) {
-            $user = User::where('email', $request->email)->first();
-            if ($user) {
-                $userId = $user->id;
-                $rates = ['gold' => 0.20, 'silver' => 0.10, 'bronze' => 0.05];
-                $discountRate = $rates[strtolower($user->status_member)] ?? 0;
+            $userId = null;
+            $discountRate = 0;
+            $emailCustomer = null;
+
+            if ($request->has_account == 'yes' && $request->email) {
+                $user = User::where('email', $request->email)->first();
+                if ($user) {
+                    $userId = $user->id;
+                    $emailCustomer = $user->email;
+                    $rates = ['gold' => 0.20, 'silver' => 0.10, 'bronze' => 0.05];
+                    $discountRate = $rates[strtolower($user->status_member)] ?? 0;
+                }
             }
-        }
 
-        $today = now()->format('Ymd');
-        $lastTransaction = Transaction::whereDate('created_at', now()->today())
-            ->orderBy('id', 'desc')
-            ->first();
+            $finalPrice = $basePrice - ($basePrice * $discountRate);
 
-        if ($lastTransaction) {
-            $lastNumber = substr($lastTransaction->transaction_code, -4);
-            $nextNumber = str_pad((int)$lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $nextNumber = '0001';
-        }
+            $today = now()->format('Ymd');
+            $lastTransaction = Transaction::whereDate('created_at', now()->today())->orderBy('id', 'desc')->first();
+            $nextNumber = $lastTransaction ? str_pad((int)substr($lastTransaction->transaction_code, -4) + 1, 4, '0', STR_PAD_LEFT) : '0001';
+            $transactionCode = 'KC-' . $today . '-' . $nextNumber;
 
-        $transactionCode = 'KC-' . $today . '-' . $nextNumber;
-
-        $finalPrice = $basePrice - ($basePrice * $discountRate);
-
-        DB::transaction(function () use ($request, $finalPrice, $userId, $transactionCode, $outlet) {
-            $transaction = Transaction::create([
+            $newTransaction = Transaction::create([
                 'transaction_code' => $transactionCode,
                 'user_id'          => $userId,
                 'outlet_id'        => $outlet->id,
                 'total_price'      => $finalPrice,
-                'status'           => 'pending',
-                'payment_status'   => 'paid',
             ]);
 
             TransactionItem::create([
-                'transaction_id' => $transaction->id,
+                'transaction_id' => $newTransaction->id,
                 'customer_name'  => $request->customer_name,
                 'shoes_name'     => $request->shoes_name,
                 'shoes_color'    => $request->shoes_color,
@@ -188,32 +176,24 @@ class TransactionController extends Controller
             ]);
 
             DetailTransaction::create([
-                'transaction_id' => $transaction->id,
+                'transaction_id' => $newTransaction->id,
                 'status' => 'pending',
                 'progress_status' => 'pending',
-                'cancel_reason' => null,
+                'payment_status' => 'paid',
             ]);
+
+            return ['transaction' => $newTransaction, 'email' => $emailCustomer];
         });
 
-        return redirect()->back()->with('success', 'Pesanan Kasir Berhasil Dicatat!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $transaction = Transaction::with([
-            'outlet',
-            'transaction_item',
-            'detail_transaction'
-        ])->findOrFail($id);
-
-        if (request()->ajax()) {
-            return view('components.show-transaction', compact('transaction'))->render();
+        if ($data['email']) {
+            try {
+                Mail::to($data['email'])->send(new InvoiceMail($data['transaction']));
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
         }
 
-        return view('profile.role.user.order', compact('transaction'));
+        return redirect()->back()->with('success', 'Pesanan Kasir Berhasil Dicatat!');
     }
 
     public function cancel(Request $request, $id)
@@ -234,25 +214,10 @@ class TransactionController extends Controller
             $detail->update([
                 'status' => 'cancelled',
                 'progress_status' => 'cancelled',
-                'cancel_reason' => $request->cancel_reason
+                'cancel_reason' => $request->cancel_reason,
             ]);
 
-            $user = Auth::user();
-            $completedCount = Transaction::where('user_id', $user->id)
-                ->whereHas('detail_transaction', function ($q) {
-                    $q->where('status', 'completed');
-                })->count();
-
-            if ($completedCount >= 20) {
-                User::where('id', $user->id)->update(['status_member' => 'gold']);
-            } elseif ($completedCount >= 10) {
-                User::where('id', $user->id)->update(['status_member' => 'silver']);
-            } else {
-                User::where('id', $user->id)->update(['status_member' => 'bronze']);
-            }
-
-            return redirect()->route('pesanan')
-                ->with('success', 'Pesanan dibatalkan. Progres member Anda telah diperbarui.');
+            return redirect()->route('pesanan')->with('success', 'Pesanan berhasil dibatalkan.');
         });
     }
 
@@ -261,58 +226,67 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         $detail = $transaction->detail_transaction;
 
-        // 1. Definisikan urutan progres
         $statusOrder = ['waiting', 'pending', 'sorting', 'washing', 'drying', 'ready', 'cleared'];
+        $currentIndex = array_search($detail->progress_status, $statusOrder);
+        $newIndex = array_search($request->progress_status, $statusOrder);
 
-        $currentStatus = $detail->progress_status;
-        $newStatus = $request->progress_status;
-
-        $currentIndex = array_search($currentStatus, $statusOrder);
-        $newIndex = array_search($newStatus, $statusOrder);
-
-        // 2. Validasi Sisi Server: Jangan izinkan status mundur
         if ($newIndex <= $currentIndex) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Status tidak dapat dikembalikan ke tahap sebelumnya!'
-            ], 422);
+            return response()->json(['success' => false, 'message' => 'Status tidak dapat mundur!'], 422);
         }
 
-        // 3. Update Status
-        $detail->update([
-            'progress_status' => $newStatus
-        ]);
+        $detail->update(['progress_status' => $request->progress_status]);
 
-        // 4. Update status global jika sudah 'cleared' (opsional)
-        if ($newStatus === 'cleared') {
+        if ($request->progress_status === 'cleared') {
             $detail->update(['status' => 'completed']);
+            $this->checkMemberUpgrade($transaction->user_id);
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Status berhasil diperbarui ke ' . strtoupper($newStatus)
-        ]);
+        return response()->json(['success' => true, 'message' => 'Status diperbarui!']);
+    }
+
+    private function checkMemberUpgrade($userId)
+    {
+        if (!$userId) return;
+
+        $user = User::find($userId);
+        $completedCount = Transaction::where('user_id', $userId)
+            ->whereHas('detail_transaction', fn($q) => $q->where('status', 'completed'))
+            ->count();
+
+        if ($completedCount >= 20) {
+            $user->update(['status_member' => 'gold']);
+        } elseif ($completedCount >= 10) {
+            $user->update(['status_member' => 'silver']);
+        } elseif ($completedCount >= 1) {
+            if ($user->status_member === 'none' || !$user->status_member) {
+                $user->update(['status_member' => 'bronze']);
+            }
+        }
     }
 
     public function approve($id)
     {
         $transaction = Transaction::findOrFail($id);
-
-        // 2. Ambil detail transaksi (asumsi relasi bernama detail_transaction)
         $detail = $transaction->detail_transaction;
 
-        // 3. Validasi: Pastikan hanya status 'waiting' yang bisa di-approve
         if ($detail->progress_status !== 'waiting') {
-            return back()->with('error', 'Transaksi ini sudah diproses sebelumnya.');
+            return back()->with('error', 'Transaksi ini sudah diproses.');
         }
 
-        // 4. Update status
         $detail->update([
             'status' => 'pending',
             'progress_status' => 'pending'
         ]);
 
-        // 5. Kembalikan dengan pesan sukses
-        return back()->with('success', "Pesanan #{$transaction->transaction_code} berhasil diterima!");
+        return back()->with('success', "Pesanan #{$transaction->transaction_code} diterima!");
+    }
+
+    public function show(string $id)
+    {
+        $transaction = Transaction::with(['outlet', 'transaction_item', 'detail_transaction'])->findOrFail($id);
+        if (request()->ajax()) {
+            return view('components.show-transaction', compact('transaction'))->render();
+        }
+        return view('profile.role.user.order', compact('transaction'));
     }
 }

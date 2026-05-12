@@ -40,7 +40,7 @@
                 <div class="hero-text">
                     <h1>Sepatu Rusak atau kotor?<br>Kami bikin baru lagi!</h1>
                     <p>Membersihkan dan merepair<br>sepatu oleh KickCare</p>
-                    <a href="#" class="btn-pesan">Pesan Sekarang</a>
+                    <a href="login" class="btn-pesan">Login Sekarang</a>
                 </div>
                 <div class="hero-image">
                     <div class="before-after">

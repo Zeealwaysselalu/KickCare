@@ -1,10 +1,11 @@
 <aside class="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col py-6 fixed h-full z-20">
 
-    <div class="mb-6 px-6">
-        <a href="{{ route('dashboard') }}">
-            <h2 class="font-montserrat font-800 text-2xl text-blue-600 italic">KICKCARE.</h2>
-        </a>
-    </div>
+    <div class="logo-area text-center mb-6">
+            <a href="{{ route('dashboard') }}">
+                <img src="https://iili.io/Bb0dKMu.png" alt="KickCare Logo" border="0"
+                    class="mx-auto w-24 h-24 object-contain">
+            </a>
+        </div>
 
     <nav class="flex-1 px-4 flex flex-col justify-start gap-2">
 

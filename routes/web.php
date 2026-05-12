@@ -1,15 +1,36 @@
 <?php
 
-use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, ProfileController, TransactionController};
-use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\{Auth, Mail, Route};
+
+use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, ProfileController, SearchController, TransactionController, UserController};
 use App\Models\Transaction;
-use Illuminate\Support\Facades\{Auth, Route};
 
 // Public Routes
 Route::get('/', fn() => view('welcome1'));
 Route::get('/wel', fn() => view('welcome1'));
 Route::get('/bar', fn() => view('testbarcode'));
-Route::get('/status', fn() => view('cekstatus'));
+Route::get('/status', [SearchController::class, 'index'])->name('cekstatus');
+Route::get('/preview-invoice', function () {
+    $transaction = Transaction::with(['transaction_item', 'detail_transaction'])->latest()->first();
+    if (!$transaction) {
+        return "Belum ada data transaksi di database. Buat satu dulu bos!";
+    }
+    return view('mail.invoice-mail', compact('transaction'));
+});
+Route::get('/test-mail', function () {
+    $transaction = App\Models\Transaction::with(['transaction_item', 'detail_transaction', 'user'])->latest()->first();
+    if (!$transaction) {
+        return "Belum ada data transaksi di database!";
+    }
+    $emailTujuan = Auth::check() ? Auth::user()->email : 'your-email@example.com';
+    try {
+        Mail::to($emailTujuan)->send(new App\Mail\InvoiceMail($transaction));
+        return "Email berhasil dikirim ke: " . $emailTujuan;
+    } catch (\Exception $e) {
+        return "Gagal kirim email. Error: " . $e->getMessage();
+    }
+});
+
 
 // Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
