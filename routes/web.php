@@ -6,9 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\{Auth, Route};
 
 // Public Routes
-Route::get('/', fn() => view('welcome1'));
-Route::get('/wel', fn() => view('welcome1'));
-Route::get('/bar', fn() => view('testbarcode'));
+Route::get('/', fn() => view('welcome'));
 Route::get('/status', fn() => view('cekstatus'));
 
 // Authenticated Routes
