@@ -19,7 +19,7 @@
                     <div>
                         <p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest leading-none mb-1">Total
                             Pesanan</p>
-                        <p class="text-lg font-bold text-gray-800 leading-none">{{ $allTransactions->count() }}</p>
+                        <p class="text-lg font-bold text-gray-800 leading-none">{{ $countTransaction }}</p>
                     </div>
                 </div>
             </div>
@@ -148,6 +148,13 @@
                     </tbody>
                 </table>
             </div>
+             @if ($allTransactions->hasPages())
+            <div class="px-6 py-5 border-t border-gray-100 bg-gray-50/50">
+                <div class="white-pagination flex justify-center">
+                    {{ $allTransactions->links() }}
+                </div>
+            </div>
+        @endif
         </div>
     </div>
 

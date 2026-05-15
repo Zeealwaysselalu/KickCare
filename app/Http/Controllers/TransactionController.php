@@ -15,10 +15,12 @@ class TransactionController extends Controller
             'outlet',
             'transaction_item',
             'detail_transaction'
-        ])->where('user_id', Auth::id())->latest()->get();
+        ])->where('user_id', Auth::id())->latest()->paginate(10);
+        $countTransaction = Transaction::where('user_id', Auth::id())->count();
 
         return view('profile.role.user.order', [
-            'allTransactions' => $dataTransaction
+            'allTransactions' => $dataTransaction,
+            'countTransaction' => $countTransaction 
         ]);
     }
 

@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($outlets as $outlet) {
 
-            for ($i = 0; $i < 5; $i++) {
+            for ($i = 0; $i < 10; $i++) {
 
                 $transaction = Transaction::create([
                     'transaction_code' => 'KC' . str_pad($code, 4, '0', STR_PAD_LEFT),
