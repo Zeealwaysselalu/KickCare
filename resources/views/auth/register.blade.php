@@ -4,19 +4,19 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <div class="logo-area text-center mb-6">
+        <div class="logo-area text-center -mt-20">
             <a href="/">
                 <img src="https://iili.io/Bb0dKMu.png" alt="KickCare Logo" border="0"
-                    class="mx-auto w-24 h-24 object-contain">
+                    class="mx-auto w-36 h-auto object-contain">
             </a>
         </div>
 
-        <h2 class="text-left text-xl font-bold text-gray-800 mb-6 uppercase italic tracking-tight">Register</h2>
+        <h2 class="text-left text-xl font-bold text-gray-800 mb-6 -mt-8 uppercase tracking-tight">Register</h2>
 
         <div>
-            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')"
-                required autofocus autocomplete="username" placeholder="USERNAME" />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"
+                required autofocus autocomplete="name" placeholder="NAMA LENGKAP" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <div class="mt-4">

@@ -13,17 +13,17 @@
         <div class="bg-white rounded-[40px] border border-gray-100 shadow-2xl shadow-indigo-100/50 overflow-hidden">
             <form action="{{ route('admin.outlets.store') }}" method="POST" class="p-10 lg:p-12">
                 @csrf
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {{-- KIRI: DATA AKUN KASIR --}}
                     <div class="space-y-6">
                         <h2 class="text-[10px] font-black text-indigo-600 uppercase tracking-[3px] mb-6 flex items-center gap-2">
                             <span class="w-6 h-px bg-indigo-600"></span> Akun Kasir (Login)
                         </h2>
-                        
+
                         <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Username</label>
-                            <input type="text" name="username" required placeholder="Contoh: kasir_bekasi"
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">name</label>
+                            <input type="text" name="name" required placeholder="Contoh: kasir_bekasi"
                                 class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 font-bold text-sm transition-all">
                         </div>
 

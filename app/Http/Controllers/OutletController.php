@@ -68,7 +68,7 @@ class OutletController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|unique:users,username',
+            'name' => 'required|string|unique:users,name',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8',
             'outlet_name' => 'required|string|max:255',
@@ -78,7 +78,7 @@ class OutletController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $user = User::create([
-                    'username' => $request->username,
+                    'name' => $request->name,
                     'name'     => $request->outlet_name,
                     'email'    => $request->email,
                     'password' => Hash::make($request->password),
@@ -110,7 +110,7 @@ class OutletController extends Controller
         $user = $outlet->user;
 
         $request->validate([
-            'username'    => 'required|string|unique:users,username,' . $user->id,
+            'name'    => 'required|string|unique:users,name,' . $user->id,
             'email'       => 'required|email|unique:users,email,' . $user->id,
             'password'    => 'nullable|min:8',
             'outlet_name' => 'required|string|max:255',
@@ -120,7 +120,7 @@ class OutletController extends Controller
         try {
             DB::transaction(function () use ($request, $outlet, $user) {
                 $userData = [
-                    'username' => $request->username,
+                    'name' => $request->name,
                     'name'     => $request->outlet_name,
                     'email'    => $request->email,
                 ];

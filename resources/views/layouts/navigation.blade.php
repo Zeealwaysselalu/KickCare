@@ -1,9 +1,9 @@
 <aside class="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col py-6 fixed h-full z-20">
 
-    <div class="logo-area text-center mb-6">
+    <div class="logo-area text-center mb-2 -mt-14">
             <a href="{{ route('dashboard') }}">
-                <img src="https://iili.io/Bb0dKMu.png" alt="KickCare Logo" border="0"
-                    class="mx-auto w-24 h-24 object-contain">
+                <img src="{{ asset('images/kickcare.jpg') }}" alt="KickCare Logo" border="0"
+                    class="mx-auto w-45  object-contain">
             </a>
         </div>
 

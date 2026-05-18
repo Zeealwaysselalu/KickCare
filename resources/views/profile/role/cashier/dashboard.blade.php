@@ -5,7 +5,7 @@
         <header class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="font-montserrat font-bold text-[32px] text-gray-800 leading-tight">
-                    Halo, {{ Auth::user()->username }}
+                    Halo, {{ Auth::user()->name }}
                 </h1>
                 <p class="font-roboto text-[#6B7280] text-sm mt-1">Pantau status cuci sepatu Anda di sini.</p>
             </div>

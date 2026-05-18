@@ -51,7 +51,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'username' => 'required|string|unique:users,username,' . $user->id,
+            'name' => 'required|string|unique:users,name,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'name' => 'nullable|string|max:255',
             'status_member' => 'required|in:gold,silver,bronze',
@@ -60,7 +60,7 @@ class UserController extends Controller
         ]);
 
         $data = [
-            'username' => $request->username,
+            'name' => $request->name,
             'name' => $request->name,
             'email' => $request->email,
             'status_member' => $request->status_member,

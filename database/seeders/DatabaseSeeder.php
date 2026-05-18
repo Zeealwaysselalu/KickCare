@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            'username' => 'Administrator',
+            'name' => 'Administrator',
             'email' => 'admin@kickcare.com',
             'password' => Hash::make('password'),
             'role' => 'administrator',
@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $cashier1 = User::create([
-            'username' => 'CashierVeteran',
+            'name' => 'CashierVeteran',
             'email' => 'kasirveteran@kickcare.com',
             'password' => Hash::make('password'),
             'role' => 'cashier',
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $cashier2 = User::create([
-            'username' => 'CashierSerpong',
+            'name' => 'CashierSerpong',
             'email' => 'kasirserpong@kickcare.com',
             'password' => Hash::make('password'),
             'role' => 'cashier',
@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user = User::create([
-            'username' => 'User',
             'name' => 'John Doe',
             'email' => 'user@gmail.com',
             'phone' => '081234567890',

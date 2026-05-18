@@ -4,10 +4,10 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <div class="logo-area text-center mb-6">
+        <div class="logo-area text-center -mt-20">
             <a href="/">
                 <img src="https://iili.io/Bb0dKMu.png" alt="KickCare Logo" border="0"
-                    class="mx-auto w-24 h-24 object-contain">
+                    class="mx-auto w-36 h-auto object-contain">
             </a>
         </div>
 
@@ -15,7 +15,7 @@
 
         <div>
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
-                required autofocus autocomplete="username" placeholder="EMAIL" />
+                required autofocus autocomplete="name" placeholder="EMAIL" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
