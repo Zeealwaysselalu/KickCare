@@ -57,12 +57,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/transaksi', [TransactionController::class, 'index'])->name('pesanan');
     Route::get('/transaksi/{id}', [TransactionController::class, 'show'])->name('transaksi.show');
-    Route::get('/transaction', [TransactionController::class, 'create'])->name('transactions.create');
-    Route::post('/transaction/store', [TransactionController::class, 'store'])->name('transactions.store');
-    Route::post('/cashier/transactions', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
-    Route::patch('/transaction/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
+    Route::get('/transaction-order', [TransactionController::class, 'create'])->name('transactions.create');
+    Route::post('/transaction-order/store', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/transaction-order/payment/{id}', [TransactionController::class, 'payment'])->name('transactions.payment');
+    Route::post('/cashier/transactions-order', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
+    Route::patch('/transaction-order/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
     Route::post('/kasir/approve/{id}', [TransactionController::class, 'approve'])->name('kasir.approve');
-    Route::post('/transactions/{id}/update-progress', [TransactionController::class, 'updateProgress'])->name('transactions.update-progress');
+    Route::post('/transaction-order/{id}/update-progress', [TransactionController::class, 'updateProgress'])->name('transactions.update-progress');
 
     Route::get('/benefits', function () {
         $countTransaction = Transaction::where('user_id', Auth::id())->count();

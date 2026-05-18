@@ -139,7 +139,7 @@
                                     $paymentStatus = $t->detail_transaction->status;
 
                                     $statusColors = [
-                                        'waiting' => 'bg-amber-50 text-amber-700 border-amber-200',
+                                        'paying' => 'bg-amber-50 text-amber-700 border-amber-200',
                                         'pending' => 'bg-blue-50 text-blue-600 border-blue-100',
                                         'sorting' => 'bg-purple-50 text-purple-600 border-purple-100',
                                         'washing' => 'bg-cyan-50 text-cyan-600 border-cyan-100',

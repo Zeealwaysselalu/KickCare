@@ -133,7 +133,7 @@
                                 $prog = $t->detail_transaction->progress_status;
                                 $status = $t->detail_transaction->status;
                                 $colors = [
-                                    'waiting' => 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-500/20',
+                                    'paying' => 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-500/20',
                                     'pending' => 'bg-blue-50 text-blue-600 border-blue-100',
                                     'sorting' => 'bg-purple-50 text-purple-600 border-purple-100',
                                     'washing' => 'bg-cyan-50 text-cyan-600 border-cyan-100',
@@ -144,7 +144,7 @@
                                 ];
                             @endphp
                             <tr
-                                class="{{ $prog === 'waiting' ? 'bg-amber-50/20' : '' }} hover:bg-gray-50/80 transition-colors">
+                                class="{{ $prog === 'paying' ? 'bg-amber-50/20' : '' }} hover:bg-gray-50/80 transition-colors">
                                 <td class="px-8 py-6">
                                     <div class="flex flex-col">
                                         <div class="flex items-center gap-2">
@@ -152,7 +152,7 @@
                                                 class="font-black text-gray-800 italic uppercase leading-none tracking-tight">
                                                 {{ $item->shoes_name ?? 'N/A' }}
                                             </span>
-                                            @if ($prog === 'waiting')
+                                            @if ($prog === 'paying')
                                                 <span
                                                     class="bg-amber-500 text-[8px] text-white px-1.5 py-0.5 rounded font-black animate-bounce uppercase">New</span>
                                             @endif
@@ -187,7 +187,7 @@
                                             @php
                                                 // Definisikan urutan status (Index menentukan level)
                                                 $statusOrder = [
-                                                    'waiting',
+                                                    'paying',
                                                     'pending',
                                                     'sorting',
                                                     'washing',
@@ -220,7 +220,7 @@
                                 </td>
                                 <td class="px-8 py-6 text-right">
                                     <div class="flex justify-end gap-2">
-                                        @if ($prog === 'waiting')
+                                        @if ($prog === 'paying')
                                             <form action="{{ route('kasir.approve', $t->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->enum('progress_status', [
-                'waiting',
+                'paying',
                 'pending',
                 'sorting',
                 'washing',

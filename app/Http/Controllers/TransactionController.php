@@ -18,7 +18,7 @@ class TransactionController extends Controller
             'detail_transaction'
         ])->where('user_id', Auth::id())->latest()->get();
 
-        return view('profile.role.user.order', [
+        return view('profile.role.user.transaction-history', [
             'allTransactions' => $dataTransaction
         ]);
     }
@@ -109,7 +109,7 @@ class TransactionController extends Controller
             DetailTransaction::create([
                 'transaction_id' => $newTransaction->id,
                 'status' => 'pending',
-                'progress_status' => 'waiting',
+                'progress_status' => 'paying',
             ]);
 
             return $newTransaction;
@@ -207,7 +207,7 @@ class TransactionController extends Controller
 
             $detail = $transaction->detail_transaction;
 
-            if ($detail->progress_status !== 'waiting') {
+            if ($detail->progress_status !== 'paying') {
                 return back()->with('error', 'Pesanan sudah diproses dan tidak dapat dibatalkan.');
             }
 
@@ -226,7 +226,7 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         $detail = $transaction->detail_transaction;
 
-        $statusOrder = ['waiting', 'pending', 'sorting', 'washing', 'drying', 'ready', 'cleared'];
+        $statusOrder = ['paying', 'pending', 'sorting', 'washing', 'drying', 'ready', 'cleared'];
         $currentIndex = array_search($detail->progress_status, $statusOrder);
         $newIndex = array_search($request->progress_status, $statusOrder);
 
@@ -242,6 +242,24 @@ class TransactionController extends Controller
         }
 
         return response()->json(['success' => true, 'message' => 'Status diperbarui!']);
+    }
+
+    public function payment($id)
+    {
+        // Mengambil transaksi dengan item-itemnya
+        $transaction = Transaction::with(['transaction_item', 'detail_transaction'])->findOrFail($id);
+
+        // Proteksi: Pastikan hanya pemilik transaksi yang bisa bayar
+        if ($transaction->user_id !== Auth::id()) {
+            abort(403, 'Akses tidak sah.');
+        }
+
+        // Proteksi: Pastikan statusnya memang masih 'paying'
+        if ($transaction->detail_transaction->progress_status !== 'paying') {
+            return redirect()->route('pesanan')->with('error', 'Transaksi ini tidak membutuhkan pembayaran atau sudah diproses.');
+        }
+
+        return view('profile.role.user.payment', compact('transaction'));
     }
 
     private function checkMemberUpgrade($userId)
@@ -269,7 +287,7 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         $detail = $transaction->detail_transaction;
 
-        if ($detail->progress_status !== 'waiting') {
+        if ($detail->progress_status !== 'paying') {
             return back()->with('error', 'Transaksi ini sudah diproses.');
         }
 
@@ -287,6 +305,6 @@ class TransactionController extends Controller
         if (request()->ajax()) {
             return view('components.show-transaction', compact('transaction'))->render();
         }
-        return view('profile.role.user.order', compact('transaction'));
+        return view('profile.role.user.transaction-history', compact('transaction'));
     }
 }
