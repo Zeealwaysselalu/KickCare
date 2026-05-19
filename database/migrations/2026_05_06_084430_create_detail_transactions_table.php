@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('transaction_id');
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->enum('payment_method', ['qris', 'balance']);
             $table->enum('progress_status', [
                 'paying',
                 'pending',

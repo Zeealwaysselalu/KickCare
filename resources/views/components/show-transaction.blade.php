@@ -1,4 +1,4 @@
-<div class="bg-white rounded-[24px] p-6 self-start relative overflow-hidden max-w-sm mx-auto">
+<div class="bg-white rounded-[24px] p-6 self-start relative overflow-hidden max-w-sm mx-auto shadow-sm">
     <div class="relative z-10">
         <div class="mb-5 flex flex-col items-center">
             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Customer</p>
@@ -46,13 +46,32 @@
                     <span class="text-gray-800 font-bold font-mono">Dibatalkan</span>
                 @endif
             </div>
+
+            <div class="flex justify-between text-[12px] items-center">
+                <span class="font-roboto text-gray-400">Metode Pembayaran</span>
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+                    @if(strtolower($transaction->payment_method ?? '') === 'qris')
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                        <span class="text-gray-800 font-extrabold font-mono text-[10px] uppercase tracking-wider">QRIS</span>
+                    @elseif(strtolower($transaction->payment_method ?? '') === 'cash' || strtolower($transaction->payment_method ?? '') === 'tunai')
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span class="text-gray-800 font-extrabold font-mono text-[10px] uppercase tracking-wider">Tunai</span>
+                    @else
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="text-gray-800 font-extrabold font-mono text-[10px] uppercase tracking-wider">
+                            {{ $transaction->payment_method ?? 'Saldo / E-Wallet' }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+
             @if ($transaction->detail_transaction->status === 'cancelled')
                 <div class="flex justify-between text-[12px]">
                     <span class="font-roboto text-gray-400">Alasan Pembatalan</span>
-                    <span
-                        class="text-gray-800 font-bold font-mono">{{ $transaction->detail_transaction->cancel_reason ?? 'Tidak ada alasan' }}</span>
+                    <span class="text-gray-800 font-bold font-mono">{{ $transaction->detail_transaction->cancel_reason ?? 'Tidak ada alasan' }}</span>
                 </div>
             @endif
+
             <div class="pt-2 border-t border-gray-100 flex justify-between items-center">
                 <span class="font-roboto text-gray-500 text-[13px]">Total Pembayaran</span>
                 <span class="text-blue-600 font-black font-mono text-base">
@@ -62,21 +81,19 @@
         </div>
 
         @if ($transaction->detail_transaction->status === 'pending')
-            <div
-                class="flex flex-col items-center justify-center p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl mb-6">
+            <div class="flex flex-col items-center justify-center p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl mb-6">
                 <div class="bg-white p-2 border border-gray-200 rounded-xl shadow-sm">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ $transaction->transaction_code }}"
                         alt="QR Code" class="w-[110px] h-[110px]">
                 </div>
-                <p class="font-roboto text-[9px] text-gray-400 mt-4 uppercase tracking-[0.4em] font-bold">Valid ID:
-                    {{ $transaction->transaction_code }}</p>
+                <p class="font-roboto text-[9px] text-gray-400 mt-4 uppercase tracking-[0.4em] font-bold">
+                    Valid ID: {{ $transaction->transaction_code }}
+                </p>
             </div>
 
             <div class="p-4 bg-blue-600 rounded-xl flex items-start gap-3 shadow-lg shadow-blue-200">
-                <svg class="w-5 h-5 text-white shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg class="w-5 h-5 text-white shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <p class="font-roboto text-[10px] text-blue-50 leading-relaxed">
                     Harap simpan nota digital ini. Status pesanan dapat dipantau melalui dashboard atau scan QR di atas.
@@ -85,7 +102,5 @@
         @endif
     </div>
 
-    <div
-        class="absolute bottom-0 left-0 right-0 h-3 bg-[url('https://www.transparenttextures.com/patterns/zigzag.png')] opacity-20 bg-blue-900">
-    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-3 bg-[url('https://www.transparenttextures.com/patterns/zigzag.png')] opacity-20 bg-blue-900"></div>
 </div>

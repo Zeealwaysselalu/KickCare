@@ -100,7 +100,7 @@
                                     <div class="flex items-center justify-end gap-2">
                                         {{-- TOMBOL BAYAR SEKARANG (Hanya muncul jika status masih paying) --}}
                                         @if ($progStatus === 'paying')
-                                            <a href="{{ route('transactions.payment', $transaction->id) }}"
+                                            <a href="{{ route('payment.show', $transaction->id) }}"
                                                 class="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white text-[11px] px-3 py-1.5 rounded-lg font-bold shadow-md shadow-amber-100 transition-all active:scale-95 mr-1">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"

@@ -55,8 +55,10 @@ class TransactionController extends Controller
             'shoes_name' => 'required|string|max:255',
             'service' => 'required|in:wash,unyellowing,repaint',
             'shoes_color' => 'nullable|string|max:255',
+            'payment_mock' => 'required|in:qris,balance',
         ]);
 
+        // 1. Jalankan proses penyimpanan ke Database
         $transaction = DB::transaction(function () use ($request) {
             $user = Auth::user();
 
@@ -105,33 +107,52 @@ class TransactionController extends Controller
                 'price' => $finalPrice,
             ]);
 
-            // Simpan Detail Status
+            // LOGIC ATUR STATUS BERDASARKAN METODE PEMBAYARAN
+            $isQris = $request->payment_mock === 'qris';
+
             DetailTransaction::create([
                 'transaction_id' => $newTransaction->id,
                 'status' => 'pending',
-                'progress_status' => 'paying',
+                'payment_method' => $request->payment_mock,
+                'progress_status' => $isQris ? 'paying' : 'pending', // QRIS = paying, Balance = pending
             ]);
 
             return $newTransaction;
-        });
+        }); // Kurung penutup closure DB::transaction yang benar
 
+        // 2. Kirim Email Notifikasi secara Asinkronus/Background
         try {
             Mail::to(Auth::user()->email)->send(new InvoiceMail($transaction));
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
 
-        return redirect()->route('pesanan')->with('success', 'Pesanan #' . $transaction->transaction_code . ' berhasil dibuat!');
+        // 3. Kembalikan respons sesuai dengan tipe request yang masuk (AJAX / Form biasa)
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'payment_method' => $transaction->detail_transaction->payment_method,
+                'transaction_code' => $transaction->transaction_code,
+                'total_price' => $transaction->total_price,
+                'redirect_url' => route('pesanan'),
+                'message' => 'Pesanan berhasil dibuat!'
+            ]);
+        }
+
+        // Fallback jika disubmit tanpa AJAX
+        return redirect()->route('pesanan')->with('success', 'Pesanan berhasil dibuat!');
     }
 
     public function storeByCashier(Request $request)
     {
         $outlet = Outlet::where('user_id', Auth::id())->first();
+
         $request->validate([
             'customer_name' => 'required',
             'shoes_name'    => 'required',
             'shoes_color'   => 'required',
             'service'       => 'required',
+            'payment_method'=> 'nullable|in:qris,balance',
         ]);
 
         $data = DB::transaction(function () use ($request, $outlet) {
@@ -179,11 +200,11 @@ class TransactionController extends Controller
                 'transaction_id' => $newTransaction->id,
                 'status' => 'pending',
                 'progress_status' => 'pending',
-                'payment_status' => 'paid',
+                'payment_method' => $request->payment_method ?? 'qris',
             ]);
 
             return ['transaction' => $newTransaction, 'email' => $emailCustomer];
-        });
+        }); // Kurung penutup closure DB::transaction kasir yang benar
 
         if ($data['email']) {
             try {
@@ -242,24 +263,6 @@ class TransactionController extends Controller
         }
 
         return response()->json(['success' => true, 'message' => 'Status diperbarui!']);
-    }
-
-    public function payment($id)
-    {
-        // Mengambil transaksi dengan item-itemnya
-        $transaction = Transaction::with(['transaction_item', 'detail_transaction'])->findOrFail($id);
-
-        // Proteksi: Pastikan hanya pemilik transaksi yang bisa bayar
-        if ($transaction->user_id !== Auth::id()) {
-            abort(403, 'Akses tidak sah.');
-        }
-
-        // Proteksi: Pastikan statusnya memang masih 'paying'
-        if ($transaction->detail_transaction->progress_status !== 'paying') {
-            return redirect()->route('pesanan')->with('error', 'Transaksi ini tidak membutuhkan pembayaran atau sudah diproses.');
-        }
-
-        return view('profile.role.user.payment', compact('transaction'));
     }
 
     private function checkMemberUpgrade($userId)

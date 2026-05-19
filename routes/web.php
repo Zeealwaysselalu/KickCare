@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\{Auth, Mail, Route};
-
-use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, ProfileController, SearchController, TransactionController, UserController};
+use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, PaymentController, ProfileController, SearchController, TransactionController, UserController};
+use App\Http\Controllers\BalanceController;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\{Auth, Mail, Route};
 
 // Public Routes
 Route::get('/', fn() => view('welcome1'));
@@ -59,7 +59,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/transaksi/{id}', [TransactionController::class, 'show'])->name('transaksi.show');
     Route::get('/transaction-order', [TransactionController::class, 'create'])->name('transactions.create');
     Route::post('/transaction-order/store', [TransactionController::class, 'store'])->name('transactions.store');
-    Route::get('/transaction-order/payment/{id}', [TransactionController::class, 'payment'])->name('transactions.payment');
+    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/payment/{id}/process', [PaymentController::class, 'process'])->name('payment.process');
     Route::post('/cashier/transactions-order', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
     Route::patch('/transaction-order/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
     Route::post('/kasir/approve/{id}', [TransactionController::class, 'approve'])->name('kasir.approve');
@@ -72,6 +73,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/about', fn() => view('profile.role.user.about'))->name('about');
     Route::get('/api/find-user', [ProfileController::class, 'findUser'])->name('api.find-user');
+
+    Route::get('/topup', [BalanceController::class, 'index'])->name('balance.topup');
+    Route::post('/topup', [BalanceController::class, 'store'])->name('balance.store');
 
     Route::get('/admin/outlets', [OutletController::class, 'listAllOutlets'])->name('admin.outlets.index');
     Route::get('/admin/outlets/create', [OutletController::class, 'create'])->name('admin.outlets.create');
