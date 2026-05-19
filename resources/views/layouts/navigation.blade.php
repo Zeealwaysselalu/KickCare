@@ -1,8 +1,9 @@
 <aside class="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col py-6 fixed h-full z-20">
 
-    <div class="mb-6 px-6">
+    <div class="logo-area text-center mb-2 -mt-14">
         <a href="{{ route('dashboard') }}">
-            <h2 class="font-montserrat font-800 text-2xl text-blue-600 italic">KICKCARE.</h2>
+            <img src="{{ asset('images/kickcare.jpg') }}" alt="KickCare Logo" border="0"
+                class="mx-auto w-45  object-contain">
         </a>
     </div>
 
@@ -57,8 +58,9 @@
             </a>
         @endif
     </nav>
+
     <div class="border-t border-gray-100 pt-4 mt-auto px-6">
-        <div class="flex items-center gap-3 px-2 mb-4">
+        <div class="flex items-center gap-3 px-2 mb-3">
             <div class="relative">
                 <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=3B82F6&color=fff"
                     alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
@@ -67,6 +69,23 @@
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-bold text-gray-800 truncate">{{ Auth::user()->name ?: Auth::user()->email }}</p>
                 <p class="text-[11px] text-gray-500 truncate">{{ Auth::user()->email }}</p>
+            </div>
+        </div>
+
+        <div class="mx-2 mb-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+            <div class="flex items-center justify-between">
+                <div class="leading-none">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Saldo Saya</p>
+                    <p class="text-sm font-black text-blue-600 mt-1">
+                        Rp {{ number_format(Auth::user()->balance, 0, ',', '.') }}
+                    </p>
+                </div>
+
+                <a href="{{ route('balance.topup') }}" class="p-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-200 transition-all active:scale-95 group" title="Tambah Saldo">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                </a>
             </div>
         </div>
 

@@ -302,25 +302,23 @@ function initCashierLogic() {
 window.confirmStatusUpdate = function(selectElement, transactionId, oldStatus) {
     const newStatus = selectElement.value;
 
-    // Jika memilih status yang krusial, munculkan konfirmasi
     if (newStatus === 'ready' || newStatus === 'cleared') {
-        const message = newStatus === 'ready' 
+        const message = newStatus === 'ready'
             ? "Apakah sepatu benar-benar siap? Status 'Ready' akan mengirimkan notifikasi selesai ke pelanggan dan tidak dapat diubah kembali ke proses cuci."
             : "Status 'Cleared' berarti sepatu sudah diambil pelanggan. Transaksi akan ditutup dan tidak dapat diubah lagi.";
 
         if (!confirm(message)) {
-            selectElement.value = oldStatus; // Balikkan ke status sebelumnya jika batal
+            selectElement.value = oldStatus;
             return;
         }
     }
 
-    // Jika dikonfirmasi atau status biasa, jalankan fungsi update
     updateProgressStatus(selectElement, transactionId);
 }
 
 window.updateProgressStatus = function(selectElement, transactionId) {
     const newStatus = selectElement.value;
-    
+
     selectElement.disabled = true;
     selectElement.style.opacity = '0.5';
 
@@ -337,7 +335,7 @@ window.updateProgressStatus = function(selectElement, transactionId) {
     .then(data => {
         if (data.success) {
             if (newStatus === 'ready' || newStatus === 'cleared') {
-                window.location.reload(); 
+                window.location.reload();
             }
             console.log('Progress updated to: ' + newStatus);
         }
@@ -351,23 +349,17 @@ window.updateProgressStatus = function(selectElement, transactionId) {
 
 window.confirmStatusUpdate = function(selectElement, transactionId, currentStatus) {
     const nextStatus = selectElement.value;
-    
-    // 1. Ambil Token CSRF dari meta tag (karena ini file JS eksternal)
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-    // 2. Notifikasi Konfirmasi
     const message = `Pindahkan ke ${nextStatus.toUpperCase()}?\n\nPERHATIAN: Status yang sudah diupdate tidak dapat dikembalikan ke tahap ${currentStatus.toUpperCase()} lagi!`;
-    
+
     if (confirm(message)) {
-        // Matikan select sementara agar tidak double klik
         selectElement.disabled = true;
 
-        // 3. Jalankan Fetch
         fetch(`/transactions/${transactionId}/update-progress`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken, // Gunakan variabel yang ambil dari meta tag
+                'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
@@ -377,8 +369,7 @@ window.confirmStatusUpdate = function(selectElement, transactionId, currentStatu
         .then(async response => {
             const data = await response.json();
             if (response.ok) {
-                // Refresh halaman agar dropdown ter-filter (opsi lama hilang)
-                window.location.reload(); 
+                window.location.reload();
             } else {
                 alert(data.message || 'Gagal mengupdate status.');
                 selectElement.value = currentStatus;
@@ -624,6 +615,74 @@ function initComplaintLogic() {
 }
 
 /* ===============================
+    PAYMENT LOGIC (QRIS MODAL)
+================================= */
+window.closeQrisModal = function () {
+    const modal = document.getElementById('qris-modal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    document.body.style.overflow = "auto";
+};
+
+function initPaymentLogic() {
+    const form = document.getElementById('payment-form');
+    const modal = document.getElementById('qris-modal');
+
+    if (!form || !modal) return;
+
+    form.addEventListener('submit', function (e) {
+        const selectedMethod = document.querySelector('input[name="payment_mock"]:checked')?.value;
+
+        if (selectedMethod === 'qris') {
+            e.preventDefault();
+            modal.classList.remove('hidden');
+            document.body.style.overflow = "hidden";
+        }
+    });
+}
+
+/* ===============================
+    TOP UP LOGIC
+================================= */
+function initTopUpLogic() {
+    window.setTopUpAmount = function(value) {
+        const amountInput = document.getElementById('amount');
+        if (amountInput) amountInput.value = value;
+    };
+
+    window.triggerTopUpQris = function() {
+        const amountInput = document.getElementById('amount');
+        const modal = document.getElementById('qris-modal');
+
+        if (!amountInput || !modal) return;
+
+        const amountValue = amountInput.value;
+
+        if (!amountValue || amountValue < 10000) {
+            alert('Silakan masukkan atau pilih nominal top up minimal Rp 10.000');
+            return;
+        }
+
+        // 1. Update nominal teks total tagihan di modal
+        const modalTotalText = document.getElementById('modal-qris-amount');
+        if (modalTotalText) {
+            modalTotalText.innerText = formatRupiah(amountValue);
+        }
+
+        // 2. Update data string QR Code di modal
+        const qrisImage = document.getElementById('modal-qris-image');
+        if (qrisImage) {
+            qrisImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=KickCare_TopUp_Dana_${amountValue}`;
+        }
+
+        // Tampilkan modal ke layar
+        modal.classList.remove('hidden');
+        document.body.style.overflow = "hidden";
+    };
+}
+
+/* ===============================
    GENERAL LOGIC
 ================================= */
 function initGeneralLogic() {
@@ -657,6 +716,9 @@ function initGeneralLogic() {
         if (e.key === "Escape") {
             closeDetailModal();
             closeStatusModal();
+            if (typeof window.closeQrisModal === 'function') {
+                window.closeQrisModal();
+            }
         }
     });
 }
@@ -672,6 +734,8 @@ document.addEventListener(
         initCancelModal();
         initGeneralLogic();
         initComplaintLogic();
+        initPaymentLogic();
+        initTopUpLogic(); // <-- Menjalankan fungsi penanganan top up baru di sini
 
         const accountRadio = document.querySelector(
             'input[name="has_account"]:checked'

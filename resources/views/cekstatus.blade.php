@@ -12,9 +12,8 @@
 
 <body>
 
-    <!-- NAV -->
     <nav>
-        <a class="logo" href="#">
+        <a class="logo" href="/">
             <div class="logo-icon">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -28,28 +27,63 @@
         </a>
 
         <ul class="nav-links">
-            <li><a href="wel">Beranda</a></li>
-            <li><a href="status" class="active">Cek Status</a></li>
-            <li><a href="#" class="btn-login">Login</a></li>
+            <li><a href="/">Beranda</a></li>
+            <li><a href="{{ route('cekstatus') }}" class="active">Cek Status</a></li>
+            <li><a href="{{ route('login') }}" class="btn-login">Login</a></li>
         </ul>
     </nav>
 
-    <!-- HERO -->
     <div class="hero">
         <h1>Lacak Sepatu Kamu</h1>
         <p>Penasaran sepatu kamu sudah sampai tahap mana?<br>Cek status sepatu kamu di sini tanpa perlu login!</p>
     </div>
 
-    <!-- SEARCH CARD -->
     <div class="search-card">
-        <div class="search-row">
-            <input class="search-input" type="text"
-                placeholder="Masukkan Kode Order / Nomor Invoice (Contoh: KC2026010100001)" />
-            <button class="btn-cari">Cari</button>
-        </div>
+        <form action="{{ route('cekstatus') }}" method="GET">
+            <div class="search-row">
+                <input class="search-input" type="text" name="search" value="{{ request('search') }}"
+                    placeholder="Masukkan Kode Order / Nomor Invoice (Contoh: KC2026...)" />
+                <button type="submit" class="btn-cari">Cari</button>
+            </div>
+        </form>
         <p class="hint">*Kode order tertera pada struk atau pesan email anda</p>
     </div>
 
-</body>
+    <div class="max-w-2xl mx-auto px-6 mt-10 space-y-4">
+        @forelse ($transactions as $t)
+            @php
+                $item = $t->transaction_item->first();
+                $prog = $t->detail_transaction->progress_status;
+            @endphp
 
+            <div class="bg-white p-6 rounded-[24px] shadow-sm border border-gray-100 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">#{{ $t->transaction_code }}</p>
+                    <h3 class="font-montserrat font-bold text-lg uppercase ">{{ $item->shoes_name ?? 'Sepatu' }}</h3>
+                    <p class="text-xs text-gray-400 uppercase">{{ $item->service }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100">
+                        {{ $prog }}
+                    </span>
+                    <p class="text-[9px] text-gray-400 mt-2 italic">{{ $t->updated_at->diffForHumans() }}</p>
+                </div>
+            </div>
+        @empty
+            @if (request('search'))
+                <div class="text-center py-20">
+                    <div class="text-gray-200 mb-4 flex justify-center">
+                        <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <p class="text-gray-400 font-bold uppercase tracking-widest text-xs italic">Data tidak ditemukan. Silakan
+                        periksa kembali kode Anda.</p>
+                </div>
+            @endif
+        @endforelse
+    </div>
+
+</body>
 </html>

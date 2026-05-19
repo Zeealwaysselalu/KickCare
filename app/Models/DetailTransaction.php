@@ -10,7 +10,8 @@ class DetailTransaction extends Model
         'transaction_id',
         'status',
         'progress_status',
-        'cancel_reason'
+        'cancel_reason',
+        'payment_method'
     ];
 
     public function transactions()

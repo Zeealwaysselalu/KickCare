@@ -1,13 +1,36 @@
 <?php
 
-use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, ProfileController, TransactionController};
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\{AdminController, ComplaintMessageController, OutletController, PaymentController, ProfileController, SearchController, TransactionController, UserController};
+use App\Http\Controllers\BalanceController;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\{Auth, Route};
+use Illuminate\Support\Facades\{Auth, Mail, Route};
 
 // Public Routes
-Route::get('/', fn() => view('welcome'));
-Route::get('/status', fn() => view('cekstatus'));
+Route::get('/', fn() => view('welcome1'));
+Route::get('/wel', fn() => view('welcome1'));
+Route::get('/bar', fn() => view('testbarcode'));
+Route::get('/status', [SearchController::class, 'index'])->name('cekstatus');
+Route::get('/preview-invoice', function () {
+    $transaction = Transaction::with(['transaction_item', 'detail_transaction'])->latest()->first();
+    if (!$transaction) {
+        return "Belum ada data transaksi di database. Buat satu dulu bos!";
+    }
+    return view('mail.invoice-mail', compact('transaction'));
+});
+Route::get('/test-mail', function () {
+    $transaction = App\Models\Transaction::with(['transaction_item', 'detail_transaction', 'user'])->latest()->first();
+    if (!$transaction) {
+        return "Belum ada data transaksi di database!";
+    }
+    $emailTujuan = Auth::check() ? Auth::user()->email : 'your-email@example.com';
+    try {
+        Mail::to($emailTujuan)->send(new App\Mail\InvoiceMail($transaction));
+        return "Email berhasil dikirim ke: " . $emailTujuan;
+    } catch (\Exception $e) {
+        return "Gagal kirim email. Error: " . $e->getMessage();
+    }
+});
+
 
 // Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -34,12 +57,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/transaksi', [TransactionController::class, 'index'])->name('pesanan');
     Route::get('/transaksi/{id}', [TransactionController::class, 'show'])->name('transaksi.show');
-    Route::get('/transaction', [TransactionController::class, 'create'])->name('transactions.create');
-    Route::post('/transaction/store', [TransactionController::class, 'store'])->name('transactions.store');
-    Route::post('/cashier/transactions', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
-    Route::patch('/transaction/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
+    Route::get('/transaction-order', [TransactionController::class, 'create'])->name('transactions.create');
+    Route::post('/transaction-order/store', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/payment/{id}/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/cashier/transactions-order', [TransactionController::class, 'storeByCashier'])->name('transactions.cashier.store');
+    Route::patch('/transaction-order/{id}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
     Route::post('/kasir/approve/{id}', [TransactionController::class, 'approve'])->name('kasir.approve');
-    Route::post('/transactions/{id}/update-progress', [TransactionController::class, 'updateProgress'])->name('transactions.update-progress');
+    Route::post('/transaction-order/{id}/update-progress', [TransactionController::class, 'updateProgress'])->name('transactions.update-progress');
 
     Route::get('/benefits', function () {
         $countTransaction = Transaction::where('user_id', Auth::id())->count();
@@ -48,6 +73,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/about', fn() => view('profile.role.user.about'))->name('about');
     Route::get('/api/find-user', [ProfileController::class, 'findUser'])->name('api.find-user');
+
+    Route::get('/topup', [BalanceController::class, 'index'])->name('balance.topup');
+    Route::post('/topup', [BalanceController::class, 'store'])->name('balance.store');
 
     Route::get('/admin/outlets', [OutletController::class, 'listAllOutlets'])->name('admin.outlets.index');
     Route::get('/admin/outlets/create', [OutletController::class, 'create'])->name('admin.outlets.create');

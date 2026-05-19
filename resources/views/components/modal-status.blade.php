@@ -1,12 +1,12 @@
 <div id="statusModal" class="fixed inset-0 z-[99] hidden">
     <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeStatusModal()"></div>
-    
+
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md">
         <div class="bg-white rounded-[28px] overflow-hidden shadow-2xl border border-gray-100 transition-all animate-up">
             @if($latest)
                 @php
                     $steps = [
-                        'waiting' => ['judul' => 'Menunggu Konfirmasi', 'sub' => 'Pesanan Anda sedang diperiksa oleh admin.'],
+                        'paying' => ['judul' => 'Menunggu Pembayaran', 'sub' => 'Pesanan Anda sedang menunggu pembayaran.'],
                         'pending' => ['judul' => 'Pesanan Diterima', 'sub' => 'Admin mengonfirmasi cucian Anda.'],
                         'sorting' => ['judul' => 'Pengecekan', 'sub' => 'Pemeriksaan noda & material.'],
                         'washing' => ['judul' => 'Sedang Dicuci', 'sub' => 'Pembersihan oleh tim ahli.'],
@@ -54,14 +54,14 @@
 
                             <div class="space-y-7">
                                 @foreach($steps as $key => $val)
-                                    @php 
+                                    @php
                                         $loopIdx = array_search($key, $stepKeys);
                                         $isCompleted = $loopIdx < $currentIdx;
                                         $isActive = $loopIdx === $currentIdx;
                                     @endphp
-                                    
+
                                     <div class="flex gap-5 relative">
-                                        <div class="z-10 w-6 h-6 rounded-full border-4 flex items-center justify-center transition-all duration-500 
+                                        <div class="z-10 w-6 h-6 rounded-full border-4 flex items-center justify-center transition-all duration-500
                                             {{ $isActive ? 'border-blue-50 bg-blue-600 ring-4 ring-blue-50' : ($isCompleted ? 'border-green-50 bg-green-500' : 'border-white bg-gray-200') }}">
                                             @if($isCompleted || ($key === 'cleared' && $isActive))
                                                 <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@
                                                 </svg>
                                             @endif
                                         </div>
-                                        
+
                                         <div class="flex-1 -mt-1">
                                             <h5 class="text-[12px] font-bold uppercase tracking-tight {{ $isActive ? 'text-blue-600' : ($isCompleted ? 'text-gray-800' : 'text-gray-400') }}">
                                                 {{ $val['judul'] }}
@@ -84,7 +84,7 @@
                         </div>
                     @endif
 
-                    <button onclick="closeStatusModal()" 
+                    <button onclick="closeStatusModal()"
                         class="mt-10 w-full py-3.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[11px] font-bold rounded-xl transition-all uppercase tracking-widest border border-blue-100">
                         Tutup Detail
                     </button>

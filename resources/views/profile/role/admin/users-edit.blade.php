@@ -16,17 +16,17 @@
             <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="p-10 lg:p-12">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {{-- KIRI: DATA DASAR --}}
                     <div class="space-y-6">
                         <h2 class="text-[10px] font-black text-indigo-600 uppercase tracking-[3px] mb-6 flex items-center gap-2">
                             <span class="w-6 h-px bg-indigo-600"></span> Identitas Akun
                         </h2>
-                        
+
                         <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Username</label>
-                            <input type="text" name="username" value="{{ old('username', $user->username) }}" required
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">name</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required
                                 class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 font-bold text-sm transition-all">
                         </div>
 

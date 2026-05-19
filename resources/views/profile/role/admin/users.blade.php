@@ -38,10 +38,10 @@
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4">
                                         <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100">
-                                            {{ substr($user->name ?? $user->username, 0, 1) }}
+                                            {{ substr($user->name ?? $user->name, 0, 1) }}
                                         </div>
                                         <div class="flex flex-col">
-                                            <span class="font-bold text-gray-800 text-sm leading-tight">{{ $user->name ?? $user->username }}</span>
+                                            <span class="font-bold text-gray-800 text-sm leading-tight">{{ $user->name ?? $user->name }}</span>
                                             <span class="text-[11px] text-gray-400 mt-0.5">{{ $user->email }}</span>
                                         </div>
                                     </div>
